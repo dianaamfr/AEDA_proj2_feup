@@ -111,14 +111,20 @@ void Competition::showInfo() const{
     cout <<  left <<setw(17) << "End Date" << setw(4) << " "<< getEnd() << setw(3) <<endl;
     if(!trials.empty()){
         cout <<  left <<setw(17) << "Trials" <<setw(4) << " ";
-        for(const auto & trial : trials)
-            cout << trial.getName() << " ";
+        for(unsigned int i = 0; i<trials.size();i++){
+            cout << trials[i].getName();
+            if(i != trials.size()-1)
+                cout << ", ";
+        }
         cout << endl;
     }
     if(!participants.empty()){
         cout <<  left <<setw(17) << "Participants" <<setw(4) << " ";
-        for(const auto & participant : participants)
-            cout << participant<< "  ";
+        for(unsigned int i = 0; i< participants.size();i++){
+            cout << participants[i];
+            if(i != participants.size()-1)
+                cout << ", ";
+        }
         cout << endl;
     }
     cout <<  left <<setw(17) << "Winners" << setw(4) <<endl;

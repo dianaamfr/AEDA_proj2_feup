@@ -531,7 +531,7 @@ void competitionsMenu(Delegation & delegation, const string & sport){
         cout << "1 - Competition information" << endl;
         cout << "2 - All Competitions" << endl;
         cout << "3 - All Trials" << endl;
-        cout << "0 - EXIT" << endl;
+        cout << "0 - Back" << endl;
 
         do {
             testinput = checkinputchoice(input, 0, 3);
