@@ -1,0 +1,152 @@
+Football
+12
+
+Fase 1
+25/07/2020
+26/07/2020
+Portugal-Portugal,Spain-Spain,Russia-Russia
+
+Fase 2
+27/07/2020
+29/07/2020
+Spain-Spain,Russia-Russia,Japan-Japan
+////////
+Badminton
+2
+
+Men's Doubles
+30/07/2020
+01/08/2020
+Russia-RusPM,Portugal-PortAP,Japan-JapLR
+//
+Set 1
+2
+30/07/2020
+RusPM,PortAP
+PortAP
+//
+Set 2
+2
+31/07/2020
+JapLR,PortAP
+JapLR
+//
+Set 3
+2
+31/07/2020
+JapLR,RusPM
+JapLR
+//
+Final Set
+2
+01/08/2020
+JapLR,PortAP
+PortAP
+
+Women's Doubles
+03/08/2020
+04/08/2020
+Italy-ItlPF,Portugal-PortST,Germany-GerFE
+//
+Trial 1
+2
+03/08/2020
+ItlPF,PortST
+PortST
+//
+Final Set
+2
+04/08/2020
+PortST,GerFE
+GerFE
+////////
+Athletics
+1
+
+100mts
+29/07/2020
+03/08/2020
+Portugal-Carla Salome Rocha,Portugal-Ana Dulce Ferreira Felix,Japan-Yuma Hattori
+
+200mts
+04/08/2020
+04/08/2020
+Spain-Antonio Abadia Beci,Japan-Shogo Nakamura,Portugal-Carla Salome Rocha
+
+Men's Triple Jump
+01/08/2020
+01/08/2020
+Portugal-Nelson Evora,China-Dong Bin,Portugal-Pedro Pablo Pichardo Peralta
+
+Women's Discus Throw
+02/08/2020
+02/08/2020
+Croatia-Sandra Perkovic,France-Melina Michon,Portugal-Irina Cristiana Carreira Rodrigues
+
+Long Jump
+01/08/2020
+01/08/2020
+South Africa-Luvo Manyonga,United States-Jeff Henderson,Portugal-Evelise Maria Tavares Da Veiga
+////////
+Sailing
+2
+
+49er
+30/07/2020
+04/08/2020
+Spain-V1,Portugal-V3,Japan-V5
+
+Byte CII
+30/07/2020
+04/08/2020
+Spain-V2,Portugal-V4,Germany-V9
+
+Sail Final
+05/08/2020
+07/08/2020
+Spain-V1,Japan-V5,Portugal-V3
+////////
+Gymnastics
+1
+
+Artistic
+28/07/2020
+03/08/2020
+Portugal-Diogo Tribolet de Abreu,Portugal-Ana Dulce Ferreira Felix,Canada-Rosie MacLennan
+
+Trampoline
+04/08/2020
+04/08/2020
+Spain-Antonio Abadia Beci,France-Loris Frasca,Portugal-Diogo Almeida Ganchinho
+////////
+Cycling
+1
+
+Omnium
+30/07/2020
+04/08/2020
+Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins
+//
+Scratch race
+20
+30/07/2020
+Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Maria Carolina Martins,Ko Willems
+Maria Carolina Martins
+//
+Tempo race
+10
+01/08/2020
+Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Maria Carolina Martins,Ko Willems
+Ko Willems
+//
+Elimination race
+5
+02/08/2020
+Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Maria Carolina Martins,Ko Willems
+Lasse Norman Hansen
+//
+Points race
+3
+03/08/2020
+Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Ko Willems
+Lasse Norman Hansen
