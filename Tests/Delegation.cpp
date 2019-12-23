@@ -12,7 +12,7 @@
 #include <functional>
 #include <unistd.h>
 
-Delegation::Delegation() {
+Delegation::Delegation() : records(Record(Date(0,0,0),"","","","")) {
     try {
         readDelegationFile();
     }
@@ -810,7 +810,41 @@ void Delegation::writeDelegationFile() {
     else cerr << "Unable to open file";
 }
 
+void Delegation::readRecordsFile(const vector<string> &lines) {
+}
+
+void Delegation::writeRecordsFile() {
+
+}
+
 //Acessors and mutators
+Record Delegation::getRecord(string competition, string sport) {
+    Record itemNotFound(Date(0,0,0),"", "", "", "");
+    Record toFindRecord(Date(0,0,0),"", "", sport, competition);
+    BSTItrIn<Record> it(records);
+    while (!it.isAtEnd())
+    {
+        if( it.retrieve() == toFindRecord) {
+            Record pti(it.retrieve().getDate(), it.retrieve().getPlace(), it.retrieve().getRecordist(), it.retrieve().getSport(),it.retrieve().getCompetititon());
+            return pti;
+        }
+        it.advance();
+    }
+    return itemNotFound;
+}
+
+void Delegation::addRecord(const Record & record) {
+    Record itemNotFound(Date(0,0,0),"", "", "", "");
+    Record foundOrNot = records.find(record);
+    if(foundOrNot == itemNotFound) {
+        records.insert(record);
+    }
+    else {
+        records.remove(foundOrNot);
+        records.insert(record);
+    }
+}
+
 const string &Delegation::getCountry() const {
     return country;
 }

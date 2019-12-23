@@ -20,10 +20,19 @@ public:
     /*Record Default Constructor*/
     Record(){};
 
+    /**Record Constructor with parameters
+     * @param date The date when the record was achieved
+     * @param place The place where the record was achieved
+     * @param recordist The athlete who achieved the record
+     * @param sport The sport in which the record was achieved
+     * @param competition The competition in which the record was achieved
+     * */
+    Record(const Date & date,const string &place,const string &recordist,const string &sport,const string &competititon);
+
     /**Record Copy Constructor
      * @param r the Record to copy
      */
-    Record(const Record & r);
+    Record(const Record & record);
 
     /** Compares two records and checks if they are equal - same competition and sport
    * @param Record the rhs record object of the comparison

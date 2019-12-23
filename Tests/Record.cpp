@@ -4,6 +4,21 @@
 
 #include "Record.h"
 
+Record::Record(const Date & date,const string &place,const string &recordist,const string &sport,const string &competititon){
+    this->date = date;
+    this->place = place;
+    this->sport = sport;
+    this->competititon = competititon;
+    this->recordist = recordist;
+}
+
+Record::Record(const Record & record){
+    this->date = record.getDate();
+    this->place = record.getPlace();
+    this->recordist = record.getRecordist();
+    this->sport = record.getSport();
+    this->competititon = record.getCompetititon();
+}
 
 bool Record::operator<(const Record &rhs) const {
     if(sport == rhs.getSport())
