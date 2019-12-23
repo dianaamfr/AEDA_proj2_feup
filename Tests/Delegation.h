@@ -10,14 +10,18 @@
 #include <Person.h>
 #include "Trial.h"
 #include "Sport.h"
+#include "Record.h"
+#include "BST.h"
 
 /**
  * A class to store the general information about a Delegation that takes part in the 2020 Tokyo Olympic Games
  */
 class Delegation {
-    string peopleFilename; /**< Name of the people file - people.txt*/
+    string delegationFilename; /**< Name of the delegation file */
+    string peopleFilename; /**< Name of the people file*/
     string competitionsFilename; /**< Name of the competitions file*/
     string teamsFilename; /**< Name of the teams file*/
+    string recordsFilename; /**< Name of the records file*/
     string country; /**< The country of the Delegation*/
     float dailyCostStaff;/**< Daily Cost for the staff members*/
     float dailyCostAthlete;/**< Daily Cost for the athletes*/
@@ -26,6 +30,7 @@ class Delegation {
     vector<Athlete*> athletes;/**< All the athletes of the Delegation*/
     vector<Team*> teams;/**< All the teams of the Delegation*/
     vector<Sport*> sports;/**< All the sports of the Delegation*/
+    BST<Record> records; /**<World Records in the competitions the delegation takes part in*/
 public:
     /** Delegation Default Constructor*/
     Delegation();
@@ -70,9 +75,28 @@ public:
      * */
     void writeDelegationFile();
 
+    /**Reads the File with the information about the World Records acheived in the competitions in which the Delegation takes part in
+     *
+     * @param lines a vector with the lines from Records txt file
+     */
+    void readRecordsFile(const vector<string> &lines);
+
+    /** Used in Destructor, writes data back to records txt file
+     * */
+    void writeRecordsFile();
+
     /**
      * Get the Delegation's Country
      *
+     * @returns the Delegation's Country
+     */
+    Record getRecord(string competition, string sport);
+
+    /** Add a record to the records
+     * @param record The record to add to records or change if it already exists*/
+    void addRecord(const Record & record);
+
+    /**Get the Delegation's Country
      * @returns the Delegation's Country
      */
     const string &getCountry() const;

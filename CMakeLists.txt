@@ -25,4 +25,6 @@ add_executable(projeto2
         Tests/Sport.h
         Tests/Trial.cpp
         Tests/Trial.h
+        Tests/Record.cpp
+        Tests/Record.h
         main.cpp)
