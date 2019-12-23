@@ -15,9 +15,11 @@
  * A class to store the general information about a Delegation that takes part in the 2020 Tokyo Olympic Games
  */
 class Delegation {
-    string peopleFilename; /**< Name of the people file - people.txt*/
+    string delegationFilename; /**< Name of the delegation file */
+    string peopleFilename; /**< Name of the people file*/
     string competitionsFilename; /**< Name of the competitions file*/
     string teamsFilename; /**< Name of the teams file*/
+    string recordsFilename; /**< Name of the records file*/
     string country; /**< The country of the Delegation*/
     float dailyCostStaff;/**< Daily Cost for the staff members*/
     float dailyCostAthlete;/**< Daily Cost for the athletes*/

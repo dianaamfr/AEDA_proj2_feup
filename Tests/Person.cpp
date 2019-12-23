@@ -203,8 +203,8 @@ void Athlete::showInfo() const{
             cout <<", ";
     }
     cout << endl;
-    cout <<  left <<setw(17) << "Weight" <<setw(4) << " " << to_string(weight) <<endl;
-    cout <<  left <<setw(17) << "Height" <<  setw(4) << " " << to_string(height) <<endl;
+    cout <<  left <<setw(17) << "Weight" <<setw(4) << " " << weight<<endl;
+    cout <<  left <<setw(17) << "Height" <<  setw(4) << " " <<height <<endl;
 }
 
 bool Athlete::playsTeamSport(const Delegation & delegation) const{

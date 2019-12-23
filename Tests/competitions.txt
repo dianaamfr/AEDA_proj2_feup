@@ -64,45 +64,50 @@ Athletics
 1
 
 100mts
-29/07/2020
+03/08/2020
 03/08/2020
 Portugal-Carla Salome Rocha,Portugal-Ana Dulce Ferreira Felix,Japan-Yuma Hattori
+10.5
 
 200mts
 04/08/2020
 04/08/2020
 Spain-Antonio Abadia Beci,Japan-Shogo Nakamura,Portugal-Carla Salome Rocha
+21.7
 
 Men's Triple Jump
 01/08/2020
 01/08/2020
 Portugal-Nelson Evora,China-Dong Bin,Portugal-Pedro Pablo Pichardo Peralta
+18.02
 
 Women's Discus Throw
 02/08/2020
 02/08/2020
 Croatia-Sandra Perkovic,France-Melina Michon,Portugal-Irina Cristiana Carreira Rodrigues
+20.67
 
 Long Jump
 01/08/2020
 01/08/2020
 South Africa-Luvo Manyonga,United States-Jeff Henderson,Portugal-Evelise Maria Tavares Da Veiga
+6.78
 ////////
 Sailing
 2
 
 49er
 30/07/2020
-04/08/2020
+30/07/2020
 Spain-V1,Portugal-V3,Japan-V5
 
 Byte CII
-30/07/2020
+04/08/2020
 04/08/2020
 Spain-V2,Portugal-V4,Germany-V9
 
 Sail Final
-05/08/2020
+07/08/2020
 07/08/2020
 Spain-V1,Japan-V5,Portugal-V3
 ////////
@@ -111,42 +116,48 @@ Gymnastics
 
 Artistic
 28/07/2020
-03/08/2020
+28/07/2020
 Portugal-Diogo Tribolet de Abreu,Portugal-Ana Dulce Ferreira Felix,Canada-Rosie MacLennan
+14
 
 Trampoline
 04/08/2020
 04/08/2020
 Spain-Antonio Abadia Beci,France-Loris Frasca,Portugal-Diogo Almeida Ganchinho
+15
 ////////
 Cycling
 1
 
 Omnium
-30/07/2020
+31/07/2020
 04/08/2020
-Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins
+Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins3.7617e-373.7617e-373.7617e-37
 //
 Scratch race
-20
+4
 30/07/2020
 Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Maria Carolina Martins,Ko Willems
 Maria Carolina Martins
+11.66
 //
 Tempo race
-10
+4
 01/08/2020
 Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Maria Carolina Martins,Ko Willems
 Ko Willems
+10
 //
 Elimination race
-5
+4
 02/08/2020
 Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Maria Carolina Martins,Ko Willems
 Lasse Norman Hansen
+13.66
 //
 Points race
 3
 03/08/2020
 Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Ko Willems
 Lasse Norman Hansen
+11.04

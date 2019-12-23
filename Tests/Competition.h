@@ -18,6 +18,7 @@ class Competition {
     vector<Trial> trials; /**< list of the trials*/
     vector<Medal> medals; /**< list of medals */
     vector<string> participants;/**< List of the participants*/
+    float result; /**< the best result of the competition in  2020's Olympic Games*/
 public:
     /** Competition Default Constructor*/
     Competition();
@@ -56,23 +57,39 @@ public:
     const string & getName() const;
 
     /**
-    * Set the Competition's name
+    * Set the Best Result of the Competition achieved in 2020
     *
-    * @param n the Competition's name
+    * @returns the Competition's name
     */
+
+    float getResult() const;
+
+    /**
+    * Set the Competition's Best Result in 2020
+    *
+    * @param result the best result achieved in 2020's games in the competition
+    */
+    void setResult(float result = -2.0);
+
+    /**
+  * Set the Competition's name
+  *
+  * @param n the Competition's name
+  */
+
     void setName(const string &n);
 
     /**
     * Set the Competition's begin Date
     *
-    * @param b the Delegation's begin Date
+    * @param b the Competition's begin Date
     */
     void setBegin(const Date &b);
 
     /**
     * Set the Competition's name
     *
-    * @param e the Delegation's end Date
+    * @param e the Competition's end Date
     */
     void setEnd(const Date &e);
 

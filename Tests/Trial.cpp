@@ -19,6 +19,7 @@ Trial::Trial(const Trial & t){
     winner = t.getWinner();
     numberOfElements = t.getNumberOfElements();
     participants = t.getParticipants();
+    result = t.getResult();
 }
 
 const string & Trial::getWinner() const{
@@ -47,6 +48,14 @@ void Trial::setPlayers(const vector<string> & players){
 
 void Trial::setNumberOfElements(unsigned int n){
     numberOfElements = n;
+}
+
+float Trial::getResult() const {
+    return result;
+}
+
+void Trial::setResult(float result) {
+    this->result = result;
 }
 
 unsigned int Trial::getNumberOfElements() const{

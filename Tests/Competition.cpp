@@ -31,6 +31,7 @@ Competition::Competition(const Competition & c){
     trials = c.getTrials();
     medals = c.getMedals();
     participants =c.getParticipants();
+    result = c.getResult();
 }
 
 const Date & Competition::getBegin() const{
@@ -47,6 +48,14 @@ const string &  Competition::getName() const{
 
 const vector<Medal> & Competition::getMedals() const {
     return medals;
+}
+
+float Competition::getResult() const {
+    return result;
+}
+
+void Competition::setResult(float result) {
+    this->result = result;
 }
 
 void Competition::setName(const string &n) {

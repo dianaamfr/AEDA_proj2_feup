@@ -20,6 +20,7 @@ class Trial {
     string winner; /**< the name of the winner */
     Date date; /**< The day of the Trial*/
     unsigned int numberOfElements; /**< The number of competitors*/
+    float result; /**< the best result of the Trial in  2020's Olympic Games*/
 public:
     /*Trial Default Constructor*/
     Trial(){};
@@ -53,6 +54,21 @@ public:
      * @param w the winner of the Trial
      */
     void setWinner(const string &w);
+
+    /**
+    * Set the Best Result of the Trial achieved in 2020
+    *
+    * @returns the Competition's name
+    */
+
+    float getResult() const;
+
+    /**
+    * Set the Trial's Best Result in 2020
+    *
+    * @param result the best result achieved in 2020's games in the trial
+    */
+    void setResult(float result = -2.0);
 
     /**Set the Date of the Trial
      * @param dthe Date of the Trial
