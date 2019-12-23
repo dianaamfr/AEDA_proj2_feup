@@ -427,6 +427,10 @@ public:
      */
     Team * getAthleteTeam(const string & at) const;
 
+    /** Shows the information of all the records
+    */
+    void showAllRecords();
+
 };
 
 //Exceptions

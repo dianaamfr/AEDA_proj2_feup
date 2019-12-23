@@ -2,79 +2,63 @@ Athletics
 100mts
 -
 05/08/2012
-Berlin, Germany
+Berlin
 Jamaica-Usain Bolt
 9.63
 
 200mts
 -
 20/08/2012
-Berlin, Germany
+Berlin
 Jamaica-Usain Bolt
 19.19
+
+Long Jump
++
+11/06/1988
+Saint Petersburg
+Russia-Galina Chistyakova
+7.52
 
 Men's Triple Jump
 +
 07/08/1995
-Gothenburg, Sweden
+Gothenburg
 Great Britain-Jonathan Edwards
 18.29
 
 Women's Discus Throw
 +
 01/10/1992
-Berlin, Germany
+Berlin
 Germany-Lilli Henoch
 24.9
-
-Long Jump
-+
-11/06/1988
-Saint Petersburg, Russia
-Russia-Galina Chistyakova
-7.52
 ////////
 Cycling
+Omnium-Scratch race
 -
-Scratch race
 12/08/2016
-Rio de Janeiro, Brazil
+Rio de Janeiro
 Great Britain-Jason Kenny
 9.55
-//
-Tempo race
+Omnium-Tempo race
 -
 -1
 -1
 -1
 -1
-//
-Elimination race
--
--1
--1
--1
--1
-//
-Points race
--
--1
--1
--1
--1
-
 ////////
 Gymnastics
 Artistic
 +
 28/07/2020
-Prague, Czechoslovakia
+Prague
 Czechoslovakia-Marie Mejzlikova
 16
 
 Trampoline
 +
 19/08/2008
-Beijing, China
+Beijing
 United States-Nastia Liukin
 18
