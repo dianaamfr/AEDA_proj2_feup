@@ -3,13 +3,18 @@
 //
 
 #include "Record.h"
+#include <iomanip>
 
-Record::Record(const Date & date,const string &place,const string &recordist,const string &sport,const string &competititon){
-    this->date = date;
-    this->place = place;
+Record::Record(const string &sport,const string &competition,const string & trial){
+    this->date = Date();
+    this->place = "";
     this->sport = sport;
-    this->competititon = competititon;
-    this->recordist = recordist;
+    this->competition = competition;
+    this->recordist = "";
+    this->trial = trial;
+    this->country = "";
+    this->comparisonCriteria = '0';
+    this->record = -1;
 }
 
 Record::Record(const Record & record){
@@ -17,17 +22,36 @@ Record::Record(const Record & record){
     this->place = record.getPlace();
     this->recordist = record.getRecordist();
     this->sport = record.getSport();
-    this->competititon = record.getCompetititon();
+    this->competition = record.getCompetition();
+    this->trial = record.getTrial();
+    this->country = record.getCountry();
+    this->comparisonCriteria = record.getComparisonCriteria();
+    this->record = record.getRecord();
+}
+
+Record::Record(){
+    this->date = Date();
+    this->place = "";
+    this->sport = "";
+    this->competition = "";
+    this->recordist = "";
+    this->trial = "";
+    this->country = "";
+    this->comparisonCriteria = '0';
+    this->record = -1;
 }
 
 bool Record::operator<(const Record &rhs) const {
-    if(sport == rhs.getSport())
-        return competititon < rhs.getCompetititon();
+    if(sport == rhs.getSport()){
+        if(competition == rhs.getCompetition())
+            return trial < rhs.getTrial();
+        return competition < rhs.getCompetition();
+    }
     return sport < rhs.getSport();
 }
 
 bool Record::operator==(const Record &rhs) const {
-    return sport == rhs.getSport() && competititon == rhs.getCompetititon();
+    return sport == rhs.getSport() && competition == rhs.getCompetition() && trial == rhs.getTrial();
 }
 
 const Date &Record::getDate() const {
@@ -62,10 +86,54 @@ void Record::setSport(const string &sport) {
     this->sport = sport;
 }
 
-const string &Record::getCompetititon() const {
-    return competititon;
+const string &Record::getCompetition() const {
+    return competition;
 }
 
-void Record::setCompetititon(const string &competititon) {
-    this->competititon = competititon;
+void Record::setCompetition(const string &competition) {
+    this->competition = competition;
+}
+
+const string &Record::getTrial() const {
+    return trial;
+}
+
+void Record::setTrial(const string &trial) {
+    this->trial = trial;
+}
+
+float Record::getRecord() const {
+    return record;
+}
+
+void Record::setRecord(float record) {
+    Record::record = record;
+}
+
+char Record::getComparisonCriteria() const {
+    return comparisonCriteria;
+}
+
+void Record::setComparisonCriteria(char comparisonCriteria) {
+    Record::comparisonCriteria = comparisonCriteria;
+}
+
+const string &Record::getCountry() const {
+    return country;
+}
+
+void Record::setCountry(const string &country) {
+    Record::country = country;
+}
+
+void Record::showInfo() const{
+    cout <<  left <<setw(17) << "Sport" << setw(4) << " "<< sport <<endl;
+    cout <<  left <<setw(17) << "Competition" <<setw(4) << " "<< competition << endl;
+    if(!trial.empty())
+        cout <<  left <<setw(17) << "Trial" <<setw(4) << " "<< trial << endl;
+    cout <<  left <<setw(17) << "Date" << setw(4) << " "<< date <<endl;
+    cout <<  left <<setw(17) << "Place" << setw(4) << " "<< place <<endl;
+    cout <<  left <<setw(17) << "Record" <<setw(4) << " "<< record << endl;
+    cout <<  left <<setw(17) << "Recordist Country" << setw(4) << " "<< country <<endl;
+    cout <<  left <<setw(17) << "Recordist" << setw(4) << " "<< recordist <<endl;
 }

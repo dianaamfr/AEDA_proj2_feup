@@ -12,7 +12,7 @@
 #include <functional>
 #include <unistd.h>
 
-Delegation::Delegation() : records(Record(Date(0,0,0),"","","","")) {
+Delegation::Delegation() : records(Record()) {
     try {
         readDelegationFile();
     }
@@ -129,9 +129,6 @@ void Delegation::readDelegationFile() {
     delegationFile.close();
     delegationFile.clear();
 
-    //for (size_t i = 0; i < teams.size(); i++)
-        //(teams[i])->showInfo();
-
     //Read competitions file
     delegationFile.open(competitionsFilename + ".txt");
     if (delegationFile.fail()) {
@@ -139,6 +136,16 @@ void Delegation::readDelegationFile() {
     }
     readCompetitionsFile(fileToLineVector(delegationFile));
     delegationFile.clear();
+    delegationFile.close();
+
+    //Read records file
+    delegationFile.open(recordsFilename + ".txt");
+    if (delegationFile.fail()) {
+        throw FileError(recordsFilename + ".txt");
+    }
+    readRecordsFile(fileToLineVector(delegationFile));
+    delegationFile.clear();
+    delegationFile.close();
 
     //set team competitions
     for (auto &team: teams) {//corre o vetor de equipas
@@ -593,7 +600,7 @@ void Delegation::readCompetitionsFile(const vector<string> &lines) {
                         if(!lines[i].empty() && lines[i] != "////////" && lines[i] != "//" ){ //se não for o fim do ficheiro, o inicio de um jogo,
                             line = regex_replace(lines[i], regex("^ +| +$|( ) +"), "$1");//de uma nova modalidade ou de uma nova competição então é um resultado
                             if (checkFloatInput(line) != 0)
-                                throw FileStructureError(line);
+                                throw FileStructureError(competitionsFilename);
                             trial.setResult(stof(line));
                         }
                         else{
@@ -811,6 +818,157 @@ void Delegation::writeDelegationFile() {
 }
 
 void Delegation::readRecordsFile(const vector<string> &lines) {
+    int numline = 0;
+    string line;
+    Date d;
+    char read='s'; // auxiliar para saber se vamos ler um record de uma competition ou de um trial (c ou t) ou nome de um sport (s)
+    Record record;
+    for (size_t i = 0; i < lines.size()+1; i++) {
+        numline++;
+        if (i != lines.size())
+            line = lines[i];
+        else{
+            records.insert(record);
+            break;
+        }
+        if (numline == 1 && (line.empty()||line == "////////"||line == "//")) {// se for a primeira linha vamos ver se é uma nova modalidade, competição ou jogo
+            if(line == "////////"){
+                records.insert(record);
+                read ='s';
+                i++;
+                line = lines[i];
+            }
+            else if(line =="//"){
+                records.insert(record);
+                read = 't';
+                i++;
+                line = lines[i];
+            }
+            else if( line.empty()){
+                records.insert(record);
+                read = 'c';
+                i++;
+                line = lines[i];
+            }
+        }
+
+        if(read == 's'){
+            line = regex_replace(lines[i], regex("^ +| +$|( ) +"), "$1");
+            if (checkStringInput(line) != 0)
+                throw FileStructureError(recordsFilename);
+            record.setSport(line);
+            numline = 0;
+            if(lines[i+1].find("-") != string::npos){//we are reading a trial
+                read = 't';
+            }
+            else{
+                read = 'c';
+            }
+        }
+        else if (read == 'c'){
+            switch(numline){
+                case 1:
+                    line = regex_replace(lines[i], regex("^ +| +$|( ) +"), "$1");
+                    record.setCompetition(line);
+                    record.setTrial();
+                    break;
+                case 2:
+                    if (line != "+" && line != "-")
+                        throw FileStructureError(recordsFilename);
+                    record.setComparisonCriteria(line[0]);
+                    break;
+                case 3:
+                    line = regex_replace(lines[i], regex("^ +| +$|( ) +"), "$1");
+                    if (checkDateInput(line, d) != 0){
+                        if(line == "-1") d = Date();
+                        else throw FileStructureError(recordsFilename);
+                    }
+                    record.setDate(d);
+                    break;
+                case 4:
+                    line = regex_replace(lines[i], regex("^ +| +$|( ) +"), "$1");
+                    if(line == "-1") line = "";
+                    record.setPlace(line);
+                    break;
+                case 5:
+                    if (line.find('-') != string::npos) {
+                        if(line == "-1"){
+                            line = "";
+                            record.setCountry(line);
+                            record.setRecordist(line);
+                        }
+                        else{
+                            record.setCountry(regex_replace(line.substr(0, line.find('-')), regex("^ +| +$|( ) +"), "$1"));
+                            record.setRecordist(regex_replace(line.substr(line.find('-') + 1, line.size()), regex("^ +| +$|( ) +"),"$1"));
+                        }
+                    }
+                    else throw FileStructureError(recordsFilename);
+                    break;
+                case 6:
+                    line = regex_replace(lines[i], regex("^ +| +$|( ) +"), "$1");
+                    if (checkFloatInput(line) != 0)
+                        throw FileStructureError(recordsFilename);
+                    record.setRecord(stof(line));
+                    numline=0;
+                    break;
+                default:
+                    throw FileStructureError(recordsFilename);
+            }
+        }
+        else{
+            switch(numline){
+                case 1:
+                    if (line.find('-') != string::npos) {
+                        record.setCompetition(regex_replace(line.substr(0, line.find('-')), regex("^ +| +$|( ) +"), "$1"));
+                        record.setTrial(regex_replace(line.substr(line.find('-') + 1, line.size()), regex("^ +| +$|( ) +"),"$1"));
+                    }
+                    else throw FileStructureError(recordsFilename);
+                    break;
+                case 2:
+                    line = regex_replace(lines[i], regex("^ +| +$|( ) +"), "$1");
+                    if (line != "+" && line != "-")
+                        throw FileStructureError(recordsFilename);
+                    record.setComparisonCriteria(line[0]);
+                    break;
+                case 3:
+                    line = regex_replace(lines[i], regex("^ +| +$|( ) +"), "$1");
+                    if (checkDateInput(line, d) != 0){
+                        if(line == "-1") d = Date();
+                        else throw FileStructureError(recordsFilename);
+                    }
+                    record.setDate(d);
+                    break;
+                case 4:
+                    line = regex_replace(lines[i], regex("^ +| +$|( ) +"), "$1");
+                    if(line == "-1") line = "";
+                    record.setPlace(line);
+                    break;
+                case 5:
+                    if (line.find('-') != string::npos) {
+                        if(line == "-1"){
+                            line = "";
+                            record.setCountry(line);
+                            record.setRecordist(line);
+                        }
+                        else{
+                            record.setCountry(regex_replace(line.substr(0, line.find('-')), regex("^ +| +$|( ) +"), "$1"));
+                            record.setRecordist(regex_replace(line.substr(line.find('-') + 1, line.size()), regex("^ +| +$|( ) +"),"$1"));
+                        }
+                    }
+                    else throw FileStructureError(recordsFilename);
+                    break;
+                case 6:
+                    line = regex_replace(lines[i], regex("^ +| +$|( ) +"), "$1");
+                    if (checkFloatInput(line) != 0)
+                        throw FileStructureError(recordsFilename);
+                    record.setRecord(stof(line));
+                    numline=0;
+                    break;
+                default:
+                    throw FileStructureError(recordsFilename);
+            }
+        }
+    }
 }
 
 void Delegation::writeRecordsFile() {
@@ -819,13 +977,13 @@ void Delegation::writeRecordsFile() {
 
 //Acessors and mutators
 Record Delegation::getRecord(string competition, string sport) {
-    Record itemNotFound(Date(0,0,0),"", "", "", "");
-    Record toFindRecord(Date(0,0,0),"", "", sport, competition);
+    Record itemNotFound;
+    Record toFindRecord(sport, competition);
     BSTItrIn<Record> it(records);
     while (!it.isAtEnd())
     {
         if( it.retrieve() == toFindRecord) {
-            Record pti(it.retrieve().getDate(), it.retrieve().getPlace(), it.retrieve().getRecordist(), it.retrieve().getSport(),it.retrieve().getCompetititon());
+            Record pti(it.retrieve());
             return pti;
         }
         it.advance();
@@ -834,7 +992,7 @@ Record Delegation::getRecord(string competition, string sport) {
 }
 
 void Delegation::addRecord(const Record & record) {
-    Record itemNotFound(Date(0,0,0),"", "", "", "");
+    Record itemNotFound;
     Record foundOrNot = records.find(record);
     if(foundOrNot == itemNotFound) {
         records.insert(record);
@@ -3406,33 +3564,15 @@ void Delegation::mostAwardedAthletes() const{
     }
 }
 
-//History
-/*void Delegation::athletesHistory() {
-    int test = 0;
-    string input = "";
-
-    system("cls");
-    cout << "_______________________________________________________" << endl << endl;
-    cout << "  Athletes that don't compete in the Olympics anymore  " << endl;
-    cout << "_______________________________________________________" << endl << endl;
-
-
-    if (!oldAthletes.empty()) {
-        vector<Athlete *>::const_iterator it;
-        for (it = athletes.begin(); it != athletes.end(); it++) {
-            (*it)->showInfo();
-            cout << endl;
-        }
-    } else
-        throw NoMembers();
-
-    cout << endl << "0 - BACK" << endl;
-    do {
-        test = checkinputchoice(input, 0, 0);
-        if (test != 0)
-            cerr << "Invalid option! Press 0 to go back." << endl;
-    } while (test != 0 && test != 2);
-}*/
+//Records (BST) functions
+void Delegation::showAllRecords(){
+    BSTItrIn<Record> bstit(records);
+    while(!bstit.isAtEnd()){
+        bstit.retrieve().showInfo();
+        cout << endl;
+        bstit.advance();
+    }
+}
 
 //File Errors - Exceptions
 FileError::FileError(string file) : file(move(file)) {}

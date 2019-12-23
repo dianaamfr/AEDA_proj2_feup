@@ -14,20 +14,22 @@ class Record {
     Date date;/**< The date when the record was achieved*/
     string place;/**< The place where the record was achieved*/
     string recordist;/**< The athlete who achieved the record*/
+    string country;/**< The athlete's country*/
     string sport;/**< The sport in which the record was achieved*/
-    string competititon;/**< The competition in which the record was achieved*/
+    string competition;/**< The competition in which the record was achieved*/
+    string trial;/**< The competition trial in which the record was achieved*/
+    float record;/**< The value of the record*/
+    char comparisonCriteria; /**< - or + indicates if a record is better if it's value is lower(-) or higher(+) */
 public:
     /*Record Default Constructor*/
-    Record(){};
+    Record();
 
     /**Record Constructor with parameters
-     * @param date The date when the record was achieved
-     * @param place The place where the record was achieved
-     * @param recordist The athlete who achieved the record
      * @param sport The sport in which the record was achieved
      * @param competition The competition in which the record was achieved
+     * @param trial The competition trial in which the record was achieved
      * */
-    Record(const Date & date,const string &place,const string &recordist,const string &sport,const string &competititon);
+    Record(const string &sport,const string &competititon,const string & trial="");
 
     /**Record Copy Constructor
      * @param r the Record to copy
@@ -82,19 +84,62 @@ public:
     const string &getSport() const;
 
     /** Set the name of the sport in which the record was achieved
-    * @param recordist the name of the sport in which the record was achieved
+    * @param sport the name of the sport in which the record was achieved
     */
     void setSport(const string &sport);
 
     /** Get the name of the competition in which the record was achieved
     * @returns the name of the competition in which the record was achieved
     */
-    const string &getCompetititon() const;
+    const string &getCompetition() const;
 
     /** Set the name of the competition in which the record was achieved
-    * @param recordist the name of the competition in which the record was achieved
+    * @param competition the name of the competition in which the record was achieved
     */
-    void setCompetititon(const string &competititon);
+    void setCompetition(const string &competition);
+
+    /** Get the name of the trial in which the record was achieved
+    * @returns the name of the trial in which the record was achieved
+    */
+    const string &getTrial() const;
+
+    /** Set the name of the trial in which the record was achieved
+    * @param trial the name of the trial in which the record was achieved
+    */
+    void setTrial(const string &trial="");
+
+    /** Get the value of record
+   * @returns the value of the record
+   */
+    float getRecord() const;
+
+    /** Set the value of the record
+    * @param record the value of the record
+    */
+    void setRecord(float record);
+
+    /** Get the comparison criteria
+   * @returns the comparison criteria (+ or -)
+   */
+    char getComparisonCriteria() const;
+
+    /** Set the comparison criteria
+    * @param comparisonCriteria the comparisonCriteria for the records - to check if a record is better or worse than actual one
+    */
+    void setComparisonCriteria(char comparisonCriteria);
+
+    /** Get the country of the recordist
+   * @returns the country of the recordist
+   */
+    const string &getCountry() const;
+
+    /** Set the country of the recordist
+    * @param country the country of the recordist
+    */
+    void setCountry(const string &country);
+
+    /** Shows information about the Record in a human friendly way*/
+    void showInfo() const;
 };
 
 
