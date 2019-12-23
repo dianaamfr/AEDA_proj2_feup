@@ -36,6 +36,7 @@ Delegation::~Delegation(){
     writeCompetitionsFile();
     writeTeamsFile();
     writeDelegationFile();
+    writeRecordsFile();
 }
 
 //Reading files functions
@@ -972,7 +973,74 @@ void Delegation::readRecordsFile(const vector<string> &lines) {
 }
 
 void Delegation::writeRecordsFile() {
+    ofstream myfile (recordsFilename + ".txt");
+    if (myfile.is_open())
+    {
+        BSTItrIn<Record> it(records);
+        BSTItrIn<Record> it2(records);
+        string sp="";
+        string c="";
+        int compCount=1;
+        int trialCount = 0;
+        int nRecords=0;
 
+        while(!it2.isAtEnd()){
+            nRecords++;
+            it2.advance();
+        }
+
+        while(!it.isAtEnd()){
+            nRecords--;
+            if(it.retrieve().getSport()!= sp) {
+                if (sp != ""){
+                    myfile << "////////"<<endl;
+                    compCount = 1;
+                    trialCount = 0;
+                }
+                sp = it.retrieve().getSport();
+                myfile << sp << endl;
+            }
+            else{
+                if(c != it.retrieve().getCompetition()){
+                    c=it.retrieve().getCompetition();
+                    compCount++;
+                }
+                else{
+                    trialCount++;
+                }
+            }
+
+            if(it.retrieve().getTrial() == ""){//competition
+                if(compCount != 1) myfile << endl; //separa competições por linha vazia
+                myfile << it.retrieve().getCompetition()<<endl;
+                myfile << it.retrieve().getComparisonCriteria()<<endl;
+                if(it.retrieve().getDate() == Date()) myfile << "-1\n";
+                else myfile << it.retrieve().getDate()<<endl;
+                if(it.retrieve().getPlace().empty()) myfile << "-1\n";
+                else myfile << it.retrieve().getPlace()<<endl;
+                if(it.retrieve().getCountry().empty() && it.retrieve().getRecordist().empty()) myfile << "-1\n";
+                else myfile << it.retrieve().getCountry() << "-" << it.retrieve().getRecordist()<<endl;
+                myfile << it.retrieve().getRecord();
+                if(nRecords != 0) myfile << endl;
+            }
+            else{
+                if(trialCount != 0) myfile << "//"<<endl; //separa competições por espaço
+                myfile << it.retrieve().getCompetition()<< "-"<< it.retrieve().getTrial()<<endl;
+                myfile << it.retrieve().getComparisonCriteria()<<endl;
+                if(it.retrieve().getDate() == Date()) myfile << "-1\n";
+                else myfile << it.retrieve().getDate()<<endl;
+                if(it.retrieve().getPlace().empty()) myfile << "-1\n";
+                else myfile << it.retrieve().getPlace()<<endl;
+                if(it.retrieve().getCountry().empty() && it.retrieve().getRecordist().empty()) myfile << "-1\n";
+                else myfile << it.retrieve().getCountry() << "-" << it.retrieve().getRecordist()<<endl;
+                myfile << it.retrieve().getRecord();
+                if(nRecords != 0) myfile << endl;
+            }
+
+            it.advance();
+        }
+    }
+    else cerr << "Unable to open file";
 }
 
 //Acessors and mutators
