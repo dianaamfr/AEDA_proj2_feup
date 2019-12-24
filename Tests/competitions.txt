@@ -40,7 +40,7 @@ JapLR
 Final Set
 2
 01/08/2020
-JapLR,PortAP
+JapPM,PortAP
 PortAP
 
 Women's Doubles
@@ -131,33 +131,33 @@ Cycling
 
 Omnium
 31/07/2020
-04/08/2020
-Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins3.7617e-373.7617e-373.7617e-37-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31
+03/08/2020
+Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins
 //
 Scratch race
-4
-30/07/2020
-Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Maria Carolina Martins,Ko Willems
+10
+01/08/2020
+Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins
 Maria Carolina Martins
 11.66
 //
 Tempo race
-4
+10
 01/08/2020
-Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Maria Carolina Martins,Ko Willems
-Ko Willems
+Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins
+Maria Carolina Martins
 10
 //
 Elimination race
-4
+5
 02/08/2020
-Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Maria Carolina Martins,Ko Willems
+Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins
 Lasse Norman Hansen
 13.66
 //
 Points race
 3
 03/08/2020
-Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Ko Willems
-Lasse Norman Hansen
+Ivo Emanuel Alves Oliveira
+Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins
 11.04

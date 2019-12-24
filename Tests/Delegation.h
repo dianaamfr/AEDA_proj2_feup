@@ -32,6 +32,9 @@ class Delegation {
     vector<Sport*> sports;/**< All the sports of the Delegation*/
     BST<Record> records; /**<World Records in the competitions the delegation takes part in*/
 public:
+
+    friend bool newRecord(float result,float record,char comparisonCriteria);
+
     /** Delegation Default Constructor*/
     Delegation();
 
@@ -430,6 +433,8 @@ public:
     /** Shows the information of all the records
     */
     void showAllRecords();
+
+    void setRecords();
 
 };
 

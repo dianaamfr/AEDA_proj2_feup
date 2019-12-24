@@ -46,6 +46,10 @@ void Trial::setPlayers(const vector<string> & players){
     participants=players;
 }
 
+void Trial::setCountries(const vector<string> & countries){
+    this->countries=countries;
+}
+
 void Trial::setNumberOfElements(unsigned int n){
     numberOfElements = n;
 }

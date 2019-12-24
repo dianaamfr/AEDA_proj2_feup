@@ -412,8 +412,9 @@ void Delegation::readCompetitionsFile(const vector<string> &lines) {
     vector<string> trialPlayers;
     vector<Trial> trials;
     for (size_t i = 0; i < lines.size() + 1; i++) {
-        if (i != lines.size())
+        if (i != lines.size()){
             line = lines[i];
+        }
         numline++;
         if (numline == 1) {// se for a primeira linha de uma pessoa vamos ver se é uma nova modalidade, competição ou jogo
             if (line.empty()) {// Se a linha está vazia vamos ler a próxima competição
@@ -625,7 +626,7 @@ void Delegation::readCompetitionsFile(const vector<string> &lines) {
 
 void Delegation::writeCompetitionsFile(){
 
-    ofstream myfile (competitionsFilename+".txt");
+    ofstream myfile ("competitionsTmp.txt");
     if (myfile.is_open()) {
         for (int i = 0; i < sports.size(); ++i) {
             myfile << sports.at(i)->getName() << endl;
@@ -3639,6 +3640,76 @@ void Delegation::showAllRecords(){
         bstit.retrieve().showInfo();
         cout << endl;
         bstit.advance();
+    }
+}
+
+bool newRecord(float result,float record,char comparisonCriteria){
+    if(comparisonCriteria == '+'){
+       return (result > record);
+    }
+    return result < record;
+}
+
+void Delegation::setRecords(){
+    vector<Sport*>::iterator s;
+    Record notFound;
+
+    for(s=sports.begin(); s!= sports.end(); s++){
+        if(!(*s)->isTeamSport()){ //se for um desporto individual
+            vector<Competition> competitions = (*s)->getCompetitions();
+            vector<Competition>::iterator c;
+            for(c=competitions.begin();c!=competitions.end();c++){ //verifica se alguma das competições existe nos recordes
+                Record r((*s)->getName(),c->getName());
+                Record foundOrNot = records.find(r);
+                if(foundOrNot == notFound){//verifica se os trials da competição existem nos recordes se não existir apenas a competição
+                    vector<Trial>trials = c->getTrials();
+                    vector<Trial>::iterator t;
+                    for(t=trials.begin(); t!=trials.end();t++){
+                        r = Record((*s)->getName(),c->getName(),t->getName());
+                        foundOrNot = records.find(r);
+                        if(!(foundOrNot == notFound)){
+                            if(newRecord(t->getResult(),foundOrNot.getRecord(),foundOrNot.getComparisonCriteria())){
+                                //é melhor o recorde registado em toquio - troca
+                                r = foundOrNot;
+                                records.remove(foundOrNot);
+                                r.setDate(t->getDate());
+                                r.setRecord(t->getResult());
+                                r.setRecordist(t->getWinner());
+                                r.getCountry();
+                                r.setPlace("Tokyo");
+                                records.insert(r);
+                                /*
+                                 Date date;
+                                string place;
+                                string recordist;
+                                string country;
+                                float record;*/
+                            }
+                        }
+                    }
+                }
+                else{
+                    if(newRecord(c->getResult(),foundOrNot.getRecord(),foundOrNot.getComparisonCriteria())){
+                        //é melhor o recorde registado em toquio - troca
+                        r = foundOrNot;
+                        records.remove(foundOrNot);
+                        r.setDate(c->getEnd());
+                        r.setRecord(c->getResult());
+                        vector<Medal>medals = c->getMedals();
+                        if(medals.size() >= 1){
+                            r.setRecordist(medals[0].getWinner());
+                            r.setCountry(medals[0].getCountry());
+                        }
+                        else{
+                            r.setRecordist("");
+                            r.setCountry("");
+                        }
+                        r.setPlace("Tokyo");
+                        records.insert(r);
+                    }
+                }
+            }
+        }
     }
 }
 

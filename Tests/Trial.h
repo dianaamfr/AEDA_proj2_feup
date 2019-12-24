@@ -16,7 +16,8 @@ using namespace std;
 /**A class to store the information about a Trial*/
 class Trial {
     string name;/**< The name of the Trial*/
-    vector <string> participants;/**< The type of the medal - g(old), s(ilver), b(bronze) */
+    vector <string> participants;/**< The names of the participants*/
+    vector <string> countries; /**<The countries of the participants*/
     string winner; /**< the name of the winner */
     Date date; /**< The day of the Trial*/
     unsigned int numberOfElements; /**< The number of competitors*/
@@ -84,6 +85,11 @@ public:
      * @param players the participants of the Trial
      */
     void setPlayers(const vector<string> & players);
+
+    /**Set the countries of the Trial
+     * @param countries the countries of the Trial
+     */
+    void setCountries(const vector<string> & countries);
 
     /** Get the number of participants of the Trial
     * @returns the number of participants of the Trial
