@@ -201,7 +201,6 @@ void Delegation::readDelegationFile() {
     }
 
     setRecords();
-
 }
 
 void Delegation::readPeopleFile(const vector<string> &lines) {
@@ -1016,6 +1015,7 @@ void Delegation::writeRecordsFile() {
                 if(c != it.retrieve().getCompetition()){
                     c=it.retrieve().getCompetition();
                     compCount++;
+                    trialCount++;
                 }
                 else{
                     trialCount++;
@@ -1036,7 +1036,7 @@ void Delegation::writeRecordsFile() {
                 if(nRecords != 0) myfile << endl;
             }
             else{
-                if(trialCount != 0) myfile << "//"<<endl; //separa competições por espaço
+                if(trialCount != 0) myfile << "//"<<endl; //separa os trials
                 myfile << it.retrieve().getCompetition()<< "-"<< it.retrieve().getTrial()<<endl;
                 myfile << it.retrieve().getComparisonCriteria()<<endl;
                 if(it.retrieve().getDate() == Date()) myfile << "-1\n";

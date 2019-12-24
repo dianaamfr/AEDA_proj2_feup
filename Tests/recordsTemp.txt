@@ -35,12 +35,33 @@ Germany-Lilli Henoch
 24.9
 ////////
 Cycling
+Omnium-Elimination race
+-
+02/08/2020
+Tokyo
+Denmark-Lasse Norman Hansen
+13.66
+//
 Omnium-Points race
 -
 03/08/2020
 Tokyo
 Portugal-Ivo Emanuel Alves Oliveira
 11.04
+//
+Omnium-Scratch race
+-
+01/08/2020
+Tokyo
+Portugal-Maria Carolina Martins
+11.66
+//
+Omnium-Tempo race
+-
+01/08/2020
+Tokyo
+Portugal-Maria Carolina Martins
+10
 ////////
 Gymnastics
 Artistic
