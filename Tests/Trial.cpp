@@ -13,12 +13,17 @@ const vector<string> & Trial::getParticipants() const{
     return participants;
 }
 
+const vector<string> & Trial::getCountries() const{
+    return countries;
+}
+
 Trial::Trial(const Trial & t){
     name = t.getName();
     date = t.getDate();
     winner = t.getWinner();
     numberOfElements = t.getNumberOfElements();
     participants = t.getParticipants();
+    countries = t.getCountries();
     result = t.getResult();
 }
 
@@ -44,6 +49,10 @@ void Trial::setWinner(const string &w) {
 
 void Trial::setPlayers(const vector<string> & players){
     participants=players;
+}
+
+void Trial::setCountries(const vector<string> & countries){
+    this->countries=countries;
 }
 
 void Trial::setNumberOfElements(unsigned int n){

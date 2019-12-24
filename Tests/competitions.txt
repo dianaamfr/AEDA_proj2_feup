@@ -20,27 +20,27 @@ Men's Doubles
 Russia-RusPM,Portugal-PortAP,Japan-JapLR
 //
 Set 1
-2
+0
 30/07/2020
-RusPM,PortAP
+
 PortAP
 //
 Set 2
-2
+0
 31/07/2020
-JapLR,PortAP
+
 JapLR
 //
 Set 3
-2
+0
 31/07/2020
-JapLR,RusPM
+
 JapLR
 //
 Final Set
-2
+0
 01/08/2020
-JapLR,PortAP
+
 PortAP
 
 Women's Doubles
@@ -49,15 +49,15 @@ Women's Doubles
 Italy-ItlPF,Portugal-PortST,Germany-GerFE
 //
 Trial 1
-2
+0
 03/08/2020
-ItlPF,PortST
+
 PortST
 //
 Final Set
-2
+0
 04/08/2020
-PortST,GerFE
+
 GerFE
 ////////
 Athletics
@@ -131,33 +131,33 @@ Cycling
 
 Omnium
 31/07/2020
-04/08/2020
-Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins3.7617e-373.7617e-373.7617e-37-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31-3.94449e-31
+03/08/2020
+Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins1.67094e-381.67094e-38
 //
 Scratch race
-4
-30/07/2020
-Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Maria Carolina Martins,Ko Willems
+0
+01/08/2020
+
 Maria Carolina Martins
 11.66
 //
 Tempo race
-4
+0
 01/08/2020
-Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Maria Carolina Martins,Ko Willems
-Ko Willems
+
+Maria Carolina Martins
 10
 //
 Elimination race
-4
+0
 02/08/2020
-Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Maria Carolina Martins,Ko Willems
+
 Lasse Norman Hansen
 13.66
 //
 Points race
-3
+0
 03/08/2020
-Lasse Norman Hansen,Ivo Emanuel Alves Oliveira,Ko Willems
-Lasse Norman Hansen
+
+Ivo Emanuel Alves Oliveira
 11.04
