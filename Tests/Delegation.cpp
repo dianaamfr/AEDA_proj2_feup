@@ -200,6 +200,8 @@ void Delegation::readDelegationFile() {
         (*it)->setCompetitions(competitionsToSet);
     }
 
+    setRecords();
+
 }
 
 void Delegation::readPeopleFile(const vector<string> &lines) {
@@ -673,6 +675,7 @@ void Delegation::writeCompetitionsFile(){
                         myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getDate() << endl;
                         for (int l = 0; l < sports.at(i)->getCompetitions().at(j).getTrials().at(k).getParticipants().size(); ++l) {
                             myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getCountries().at(l);
+                            myfile << "-";
                             myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getParticipants().at(l);
                             if (l !=sports.at(i)->getCompetitions().at(j).getTrials().at(k).getParticipants().size() - 1)
                                 myfile << ",";
@@ -982,7 +985,7 @@ void Delegation::readRecordsFile(const vector<string> &lines) {
 }
 
 void Delegation::writeRecordsFile() {
-    ofstream myfile (recordsFilename + ".txt");
+    ofstream myfile ("recordsTemp.txt");
     if (myfile.is_open())
     {
         BSTItrIn<Record> it(records);
@@ -1930,7 +1933,9 @@ void Delegation::removeAthlete(){
             for(size_t i=0; i< comps.size(); i++){
                 vector<string>participants = comps[i].getParticipants();
                 vector<string>::iterator part_it = find(participants.begin(), participants.end(),nmAt);
-                if(part_it != participants.end()) participants.erase(part_it);
+                if(part_it != participants.end()){
+                    participants.erase(part_it);
+                }
                 comps[i].setParticipants(participants);
                 competitionsToSet.push_back(Competition(comps[i]));
             }
@@ -3652,6 +3657,8 @@ void Delegation::showAllRecords(){
 }
 
 bool newRecord(float result,float record,char comparisonCriteria){
+    if(record == -1) return true;
+
     if(comparisonCriteria == '+'){
        return (result > record);
     }
@@ -3683,15 +3690,11 @@ void Delegation::setRecords(){
                                 r.setDate(t->getDate());
                                 r.setRecord(t->getResult());
                                 r.setRecordist(t->getWinner());
-                                r.getCountry();
+                                vector<string>::const_iterator it = find(t->getParticipants().begin(), t->getParticipants().end(), t->getWinner());
+                                int indexParticipantCountry = distance(t->getParticipants().begin(), it);
+                                r.setCountry(t->getCountries()[indexParticipantCountry]);
                                 r.setPlace("Tokyo");
                                 records.insert(r);
-                                /*
-                                 Date date;
-                                string place;
-                                string recordist;
-                                string country;
-                                float record;*/
                             }
                         }
                     }
