@@ -13,12 +13,17 @@ const vector<string> & Trial::getParticipants() const{
     return participants;
 }
 
+const vector<string> & Trial::getCountries() const{
+    return countries;
+}
+
 Trial::Trial(const Trial & t){
     name = t.getName();
     date = t.getDate();
     winner = t.getWinner();
     numberOfElements = t.getNumberOfElements();
     participants = t.getParticipants();
+    countries = t.getCountries();
     result = t.getResult();
 }
 

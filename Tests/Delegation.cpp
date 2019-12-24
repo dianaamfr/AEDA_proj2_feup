@@ -409,7 +409,7 @@ void Delegation::readCompetitionsFile(const vector<string> &lines) {
     Medal medal;
     int medalCount = 0;
     Trial trial;
-    vector<string> trialPlayers;
+    vector<string> trialPlayers,trialCountries;
     vector<Trial> trials;
     for (size_t i = 0; i < lines.size() + 1; i++) {
         if (i != lines.size()){
@@ -472,6 +472,7 @@ void Delegation::readCompetitionsFile(const vector<string> &lines) {
                 i++;
                 line = lines[i];
                 trialPlayers.resize(0);
+                trialCountries.resize(0);
             }
         }
         //ler sport
@@ -589,9 +590,14 @@ void Delegation::readCompetitionsFile(const vector<string> &lines) {
                     break;
                 case 4:
                     participantsStream.str(line);
-                    while (getline(participantsStream, name, ','))
-                        trialPlayers.push_back(name);
+                    while (getline(participantsStream, name, ',')) {
+                        if (name.find('-') != string::npos) {
+                            trialCountries.push_back(regex_replace(name.substr(0, name.find('-')), regex("^ +| +$|( ) +"), "$1"));
+                            trialPlayers.push_back(regex_replace(name.substr(name.find('-') + 1, name.size()), regex("^ +| +$|( ) +"), "$1"));
+                        }
+                    }
                     trial.setPlayers(trialPlayers);
+                    trial.setCountries(trialCountries);
                     participantsStream.clear();
                     break;
                 case 5:
@@ -626,7 +632,7 @@ void Delegation::readCompetitionsFile(const vector<string> &lines) {
 
 void Delegation::writeCompetitionsFile(){
 
-    ofstream myfile ("competitionsTmp.txt");
+    ofstream myfile (competitionsFilename +".txt");
     if (myfile.is_open()) {
         for (int i = 0; i < sports.size(); ++i) {
             myfile << sports.at(i)->getName() << endl;
@@ -666,6 +672,7 @@ void Delegation::writeCompetitionsFile(){
                         myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getParticipants().size()<< endl;
                         myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getDate() << endl;
                         for (int l = 0; l < sports.at(i)->getCompetitions().at(j).getTrials().at(k).getParticipants().size(); ++l) {
+                            myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getCountries().at(l);
                             myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getParticipants().at(l);
                             if (l !=sports.at(i)->getCompetitions().at(j).getTrials().at(k).getParticipants().size() - 1)
                                 myfile << ",";
@@ -674,6 +681,7 @@ void Delegation::writeCompetitionsFile(){
                             }
 
                         }
+                        if(sports.at(i)->getCompetitions().at(j).getTrials().at(k).getParticipants().empty()) myfile << endl;
                         myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getWinner() << endl;
                         if(sports.at(i)->getCompetitions().at(j).getTrials().at(k).getResult() != -2.0){
                             myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getResult()<< endl;

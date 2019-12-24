@@ -51,6 +51,11 @@ public:
     */
     const vector<string> & getParticipants() const;
 
+    /** Get the countries of the participants of the Trial
+    * @returns the countries of the participants of the Trial
+    */
+    const vector<string> & getCountries() const;
+
     /**Set the winner of the Trial
      * @param w the winner of the Trial
      */
