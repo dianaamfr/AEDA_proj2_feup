@@ -132,32 +132,32 @@ Cycling
 Omnium
 31/07/2020
 03/08/2020
-Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins1.67094e-381.67094e-38
+Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins1.67094e-381.67094e-381.67094e-381.67094e-38
 //
 Scratch race
-0
+3
 01/08/2020
-
+Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins
 Maria Carolina Martins
 11.66
 //
 Tempo race
-0
+3
 01/08/2020
-
+Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins
 Maria Carolina Martins
 10
 //
 Elimination race
-0
+3
 02/08/2020
-
+Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins
 Lasse Norman Hansen
 13.66
 //
 Points race
-0
+3
 03/08/2020
-
+Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins
 Ivo Emanuel Alves Oliveira
 11.04
