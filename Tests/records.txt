@@ -41,18 +41,21 @@ Omnium-Scratch race
 -1
 -1
 -1
+//
 Omnium-Tempo race
 -
 -1
 -1
 -1
 -1
+//
 Omnium-Elimination race
 -
 -1
 -1
 -1
 -1
+//
 Omnium-Points race
 -
 -1
