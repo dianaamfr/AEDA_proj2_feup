@@ -559,6 +559,7 @@ void Delegation::readCompetitionsFile(const vector<string> &lines) {
                             competition.setResult(stof(line));
                         }else{
                             i--;
+                            competition.setResult();
                         }
                     }
                     else{
@@ -633,7 +634,7 @@ void Delegation::readCompetitionsFile(const vector<string> &lines) {
 
 void Delegation::writeCompetitionsFile(){
 
-    ofstream myfile (competitionsFilename +".txt");
+    ofstream myfile (competitionsFilename + ".txt");
     if (myfile.is_open()) {
         for (int i = 0; i < sports.size(); ++i) {
             myfile << sports.at(i)->getName() << endl;
@@ -665,7 +666,9 @@ void Delegation::writeCompetitionsFile(){
 
                 }
                 if(sports.at(i)->getCompetitions().at(j).getResult() != -2.0)
-                    myfile << sports.at(i)->getCompetitions().at(j).getResult()<< endl;
+                    myfile << sports.at(i)->getCompetitions().at(j).getResult()<<endl;
+                if(sports.at(i)->getCompetitions().at(j).getResult() == -2.0 && sports.at(i)->getCompetitions().at(j).getTrials().size() != 0 && !sports.at(i)->isTeamSport())
+                    myfile << endl;
                 if (sports.at(i)->getCompetitions().at(j).getTrials().size() != 0) {
                     for (int k = 0; k < sports.at(i)->getCompetitions().at(j).getTrials().size(); ++k) {
                         myfile << "//" << endl;
@@ -678,18 +681,37 @@ void Delegation::writeCompetitionsFile(){
                             myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getParticipants().at(l);
                             if (l !=sports.at(i)->getCompetitions().at(j).getTrials().at(k).getParticipants().size() - 1)
                                 myfile << ",";
-                            else {
-                                myfile << "\n";
+                            else{
+                                if (i != sports.size() -1)  // se não for o ultimo deporto adicona nova linha
+                                    myfile << "\n";
+                                else // se for o ultimo desporto
+                                {
+                                    if(j != sports.at(i)->getCompetitions().size() - 1)//se nao for a ultima competiçao
+                                        myfile << "\n";
+                                    else{
+                                        if(k !=sports.at(i)->getCompetitions().at(j).getTrials().size() - 1 || sports.at(i)->getCompetitions().at(j).getTrials().at(k).getResult() != -2.0)
+                                            myfile << "\n";
+                                    }
+                                }
                             }
 
                         }
                         if(sports.at(i)->getCompetitions().at(j).getTrials().at(k).getParticipants().empty()) myfile << endl;
-                        myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getWinner() << endl;
-                        if(sports.at(i)->getCompetitions().at(j).getTrials().at(k).getResult() != -2.0){
-                            myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getResult()<< endl;
+                        myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getWinner();
+                        if(sports.at(i)->getCompetitions().at(j).getTrials().at(k).getResult() != -2.0){//tem result
+                            myfile << endl  << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getResult();
                         }
-                        if (k == sports.at(i)->getCompetitions().at(j).getTrials().size() - 1 && j != sports.at(i)->getCompetitions().size() -1)
+                        if (i != sports.size() -1)  // se não for o ultimo deporto adicona nova linha
                             myfile << "\n";
+                        else // se for o ultimo desporto
+                        {
+                            if(j != sports.at(i)->getCompetitions().size() - 1)//se nao for a ultima competiçao
+                                myfile << "\n";
+                            else{
+                                if(k != sports.at(i)->getCompetitions().at(j).getTrials().size() - 1)//se nao for o ultimo trial
+                                    myfile << "\n";
+                            }
+                        }
                     }
                 } else {
                     if (j != sports.at(i)->getCompetitions().size() - 1)
@@ -984,7 +1006,7 @@ void Delegation::readRecordsFile(const vector<string> &lines) {
 }
 
 void Delegation::writeRecordsFile() {
-    ofstream myfile ("recordsTemp.txt");
+    ofstream myfile (recordsFilename + ".txt");
     if (myfile.is_open())
     {
         BSTItrIn<Record> it(records);
@@ -3647,20 +3669,11 @@ void Delegation::mostAwardedAthletes() const{
 }
 
 //Records (BST) functions
-void Delegation::showAllRecords(){
-    BSTItrIn<Record> bstit(records);
-    while(!bstit.isAtEnd()){
-        bstit.retrieve().showInfo();
-        cout << endl;
-        bstit.advance();
-    }
-}
-
 bool newRecord(float result,float record,char comparisonCriteria){
     if(record == -1) return true;
 
     if(comparisonCriteria == '+'){
-       return (result > record);
+        return (result > record);
     }
     return result < record;
 }
@@ -3722,6 +3735,48 @@ void Delegation::setRecords(){
             }
         }
     }
+}
+
+void Delegation::showAllRecords(){
+
+    int test = 0;
+    string input = "";
+
+    system("cls");
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << setw(22) << " "<< "All-Time Olympic Records" <<"" << endl;
+    cout << "----------------------------------------------------------------------"  << endl << endl;
+
+
+    BSTItrIn<Record> bstit(records);
+    while(!bstit.isAtEnd()){
+        bstit.retrieve().showInfo();
+        cout << endl;
+        bstit.advance();
+    }
+    if(records.isEmpty()) throw NoRecords();
+
+    cout << endl << "0 - BACK" << endl;
+    do {
+        test = checkinputchoice(input, 0, 0);
+        if (test != 0&& test != 2)
+            cerr << "Invalid option! Press 0 to go back." << endl;
+    } while (test != 0 && test != 2);
+}
+
+void Delegation::showRecordsBySport(){
+}
+
+void Delegation::showRecordsByCompetition(){
+}
+
+void Delegation::showTokyoRecords(){
+}
+
+void Delegation::showTokyoResults(){
+}
+
+void Delegation::changeOrAddTokyoResults(){
 }
 
 //File Errors - Exceptions
@@ -3879,5 +3934,12 @@ FullTeam::FullTeam(const string &t) {team = t;}
 
 ostream &operator<<(ostream &os, FullTeam &t) {
     os << t.team << " is full!\n";
+    return os;
+}
+
+NoRecords::NoRecords(){}
+
+ostream & operator <<(ostream & os, const NoRecords & r) {
+    os << " No records to show!\n";
     return os;
 }

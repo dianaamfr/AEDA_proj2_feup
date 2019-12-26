@@ -430,11 +430,28 @@ public:
      */
     Team * getAthleteTeam(const string & at) const;
 
-    /** Shows the information of all the records
-    */
+    //records functions
+    /** Set the records based on Tokyo 2020's results*/
+    void setRecords();
+
+    /** Shows the information of all the records*/
     void showAllRecords();
 
-    void setRecords();
+    /** Show the records of Sport*/
+    void showRecordsBySport();
+
+    /** Show the records of Competition*/
+    void showRecordsByCompetition();
+
+    /** Show the records of Tokyo 2020 Olympic Games*/
+    void showTokyoRecords();
+
+    /** Show the results of Tokyo 2020 Olympic Games*/
+    void showTokyoResults();
+
+    /** Change or Add results of Tokyo 2020 Olympic Games*/
+    void changeOrAddTokyoResults();
+
 
 };
 
@@ -728,5 +745,20 @@ public:
     friend ostream & operator <<(ostream & os, FullTeam & p);
     /** FullTeam constructor*/
     explicit FullTeam(const string & t);
+};
+
+/**
+ *  An exception thrown when there are no records to show
+ */
+class NoRecords{
+public:
+    /** Indicates that there are no records to show
+    * @param os the name of the ostream
+    * @param s NoRecords object
+    * @returns reference to the original ostream to allow input/output chains
+    */
+    friend ostream & operator <<(ostream & os, const NoRecords & r);
+    /** No Records Default Constructor*/
+    explicit NoRecords();
 };
 #endif //PROJECT_1_DELEGATION_H
