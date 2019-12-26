@@ -3737,7 +3737,7 @@ void Delegation::setRecords(){
     }
 }
 
-void Delegation::showAllRecords(){
+void Delegation::showAllRecords() const{
 
     int test = 0;
     string input = "";
@@ -3764,16 +3764,152 @@ void Delegation::showAllRecords(){
     } while (test != 0 && test != 2);
 }
 
-void Delegation::showRecordsBySport(){
+void Delegation::showRecordsBySport() const{
+
+    int test = 0;
+    string input = "";
+
+    system("cls");
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << setw(18) << " "<< "All-Time Olympic Records by Sport" <<"" << endl;
+    cout << "----------------------------------------------------------------------"  << endl << endl;
+
+    bool found = false,failed=true;
+    string sp;
+
+    do{
+        cout << "Choose a sport: ";
+        getline(cin,sp);
+        if (cin.eof()){
+            cin.clear();
+            return;
+        }
+        else if(cin.fail()){
+            cin.clear();
+        }
+        else if(checkStringInput(sp) == 0)
+            failed =false;
+        if(failed) cout << "Not a sport, please try again!\n";
+    }while(failed);
+
+    BSTItrIn<Record> bstit(records);
+    while(!bstit.isAtEnd()){
+        if(bstit.retrieve().getSport() == sp){
+            if(!found) cout << endl;
+            found = true;
+            bstit.retrieve().showInfo();
+            cout << endl;
+        }
+        bstit.advance();
+    }
+    if(records.isEmpty()||!found) throw NoRecords();
+
+    cout << endl << "0 - BACK" << endl;
+    do {
+        test = checkinputchoice(input, 0, 0);
+        if (test != 0&& test != 2)
+            cerr << "Invalid option! Press 0 to go back." << endl;
+    } while (test != 0 && test != 2);
 }
 
-void Delegation::showRecordsByCompetition(){
+void Delegation::showRecordsByCompetition() const{
+    int test = 0;
+    string input = "";
+
+    system("cls");
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << setw(15) << " "<< "All-Time Olympic Records by Competition" <<"" << endl;
+    cout << "----------------------------------------------------------------------"  << endl << endl;
+
+    bool found = false,failed=true;
+    string sp;
+
+    do{
+        cout << "Choose a competition: ";
+        getline(cin,sp);
+        if (cin.eof()){
+            cin.clear();
+            return;
+        }
+        else if(cin.fail()){
+            cin.clear();
+        } else failed = false;
+        if(failed) cout << "Not a possible competition, please try again!\n";
+    }while(failed);
+
+    BSTItrIn<Record> bstit(records);
+    while(!bstit.isAtEnd()){
+        if(bstit.retrieve().getSport() == sp){
+            if(!found) cout << endl;
+            found = true;
+            bstit.retrieve().showInfo();
+            cout << endl;
+        }
+        bstit.advance();
+    }
+    if(records.isEmpty()||!found) throw NoRecords();
+
+    cout << endl << "0 - BACK" << endl;
+    do {
+        test = checkinputchoice(input, 0, 0);
+        if (test != 0&& test != 2)
+            cerr << "Invalid option! Press 0 to go back." << endl;
+    } while (test != 0 && test != 2);
 }
 
-void Delegation::showTokyoRecords(){
+void Delegation::showTokyoRecords() const{
+    int test = 0;
+    string input = "";
+
+    system("cls");
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << setw(22) << " "<< "Tokyo 2020 Olympic Records" <<"" << endl;
+    cout << "----------------------------------------------------------------------"  << endl << endl;
+
+    bool found = false;
+
+    BSTItrIn<Record> bstit(records);
+    while(!bstit.isAtEnd()){
+        if(bstit.retrieve().getPlace() == "Tokyo" && bstit.retrieve().getDate().getYear() == 2020){
+            found = true;
+            bstit.retrieve().showInfo();
+            cout << endl;
+        }
+        bstit.advance();
+    }
+    if(records.isEmpty() || !found) throw NoRecords();
+
+    cout << endl << "0 - BACK" << endl;
+    do {
+        test = checkinputchoice(input, 0, 0);
+        if (test != 0&& test != 2)
+            cerr << "Invalid option! Press 0 to go back." << endl;
+    } while (test != 0 && test != 2);
 }
 
-void Delegation::showTokyoResults(){
+void Delegation::showTokyoResults() const{
+   /* vector<Sport*>::const_iterator s;
+    Record notFound;
+
+    for(s=sports.begin(); s!= sports.end(); s++){
+        if(!(*s)->isTeamSport()){ //se for um desporto individual
+            vector<Competition> competitions = (*s)->getCompetitions();
+            vector<Competition>::iterator c;
+            for(c=competitions.begin();c!=competitions.end();c++){ //verifica se alguma das competições existe nos recordes
+
+                    vector<Trial>trials = c->getTrials();
+                    vector<Trial>::iterator t;
+                    for(t=trials.begin(); t!=trials.end();t++){
+
+                    }
+                }
+                else{
+
+                    }
+                }
+            }
+        }
+    }*/
 }
 
 void Delegation::changeOrAddTokyoResults(){
@@ -3940,6 +4076,6 @@ ostream &operator<<(ostream &os, FullTeam &t) {
 NoRecords::NoRecords(){}
 
 ostream & operator <<(ostream & os, const NoRecords & r) {
-    os << " No records to show!\n";
+    os << "No records to show!\n";
     return os;
 }

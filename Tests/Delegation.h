@@ -435,19 +435,19 @@ public:
     void setRecords();
 
     /** Shows the information of all the records*/
-    void showAllRecords();
+    void showAllRecords() const;
 
     /** Show the records of Sport*/
-    void showRecordsBySport();
+    void showRecordsBySport() const;
 
     /** Show the records of Competition*/
-    void showRecordsByCompetition();
+    void showRecordsByCompetition() const;
 
     /** Show the records of Tokyo 2020 Olympic Games*/
-    void showTokyoRecords();
+    void showTokyoRecords() const;
 
     /** Show the results of Tokyo 2020 Olympic Games*/
-    void showTokyoResults();
+    void showTokyoResults() const;
 
     /** Change or Add results of Tokyo 2020 Olympic Games*/
     void changeOrAddTokyoResults();
