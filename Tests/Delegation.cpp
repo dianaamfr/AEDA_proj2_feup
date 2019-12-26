@@ -85,8 +85,10 @@ void Delegation::readDelegationFile() {
                 break;
             case 5:
                 peopleFilename = regex_replace(line, regex("^ +| +$|( ) +"), "$1");
-                if (checkStringInput(line) != 0)
+                if (checkStringInput(line) != 0){
                     throw FileStructureError(file);
+                }
+
                 break;
             case 6:
                 teamsFilename = regex_replace(line, regex("^ +| +$|( ) +"), "$1");
@@ -226,7 +228,7 @@ void Delegation::readPeopleFile(const vector<string> &lines) {
         }
 
         if (numline == 1) { // se for a primeira linha de uma pessoa vamos ver se é funcionário ou atleta
-            readFunc = lines[i + 6].empty();
+            readFunc = lines[i + 7].empty();
             competitions.resize(0);
             a = new Athlete();
             s = new Staff();
@@ -312,6 +314,7 @@ void Delegation::readPeopleFile(const vector<string> &lines) {
             }
         } else {
             //ler funcionario
+            Staff* temp = nullptr;
             switch (numline) {
                 case 1:
                     if (checkStringInput(line) != 0){
@@ -356,7 +359,16 @@ void Delegation::readPeopleFile(const vector<string> &lines) {
                         throw FileStructureError(peopleFilename);
                     }
                     s->setFunction(line);
-                    people.push_back(new Staff(*s));
+                    break;
+                case 7:
+                    if (checkPositiveIntInput(line) != 0){
+                        cout << "here" << endl;
+                        throw FileStructureError(peopleFilename);
+                    }
+                    s->setEmployed(to_bool(line));
+                    temp = new Staff(*s);
+                    people.push_back(temp);
+                    staff.insert(temp);
                     break;
                 default:
                     throw FileStructureError(peopleFilename);
@@ -383,7 +395,8 @@ void Delegation::writePeopleFile(){
             }
             else{
                 Staff* a = dynamic_cast<Staff *> (people.at(i));
-                myfile << a->getFunction();
+                myfile << a->getFunction() << endl;
+                myfile << a->getEmployed();
             }
             if (i != people.size()-1)
                 myfile << endl << endl;

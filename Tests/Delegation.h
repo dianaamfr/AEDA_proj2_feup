@@ -12,6 +12,19 @@
 #include "Sport.h"
 #include "Record.h"
 #include "BST.h"
+#include <unordered_set>
+
+struct staffHash
+{
+    int operator() (Staff* const& st) const
+    {
+        return st->getName().size();
+    }
+    bool operator() (Staff* const& st1, Staff* const& st2) const
+    {
+        return (st1->getPassport() == st2->getPassport());
+    }
+};
 
 /**
  * A class to store the general information about a Delegation that takes part in the 2020 Tokyo Olympic Games
@@ -31,6 +44,7 @@ class Delegation {
     vector<Team*> teams;/**< All the teams of the Delegation*/
     vector<Sport*> sports;/**< All the sports of the Delegation*/
     BST<Record> records; /**<World Records in the competitions the delegation takes part in*/
+    unordered_set<Staff*,staffHash, staffHash> staff; /**< HashTable for staff pointers - Staff is also stored in people*/
 public:
 
     friend bool newRecord(float result,float record,char comparisonCriteria);
