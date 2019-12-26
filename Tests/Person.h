@@ -347,6 +347,11 @@ public:
     Staff(const string &name, const Date &birth, const string &passport, const Date &arrival, const Date &departure,
           const string &function, const bool &employed);
 
+    /** Staff constructor with only name to use with find()
+     * @param name the name of the staff member
+     * */
+    Staff(const string &name);
+
     /**Staff copy constructor
      *@param s Staff member to copy info from
      */

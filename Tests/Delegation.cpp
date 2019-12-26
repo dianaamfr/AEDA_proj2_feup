@@ -212,6 +212,7 @@ void Delegation::readPeopleFile(const vector<string> &lines) {
     bool readFunc = false;
     Athlete *a = nullptr;
     Staff *s = nullptr;
+    pair<staffHtabit ,bool> testinsert;
     //Variables to read Competitions:
     istringstream competitionsStream;
     string compStr;
@@ -312,7 +313,8 @@ void Delegation::readPeopleFile(const vector<string> &lines) {
                 default:
                     throw FileStructureError(peopleFilename);
             }
-        } else {
+        }
+        else {
             //ler funcionario
             Staff* temp = nullptr;
             switch (numline) {
@@ -368,7 +370,9 @@ void Delegation::readPeopleFile(const vector<string> &lines) {
                     s->setEmployed(to_bool(line));
                     temp = new Staff(*s);
                     people.push_back(temp);
-                    staff.insert(temp);
+                    testinsert = staff.insert(temp);
+                    //cout << (testinsert.second ? "Added" : "NotAdded" ) << endl;
+                    // necessário tirar o clean screen do main menu para verificar resultados
                     break;
                 default:
                     throw FileStructureError(peopleFilename);
@@ -1210,12 +1214,18 @@ int Delegation::findPerson(const string & name) const {
     }
     return -1;
 }
-
+staffHtabit Delegation::FindPersonHash(const string & name){
+    staffHtabit a;
+    Staff* temp = new Staff(name);
+    a = staff.find(temp);
+    return a;
+}
 //Staff Functions
 void Delegation::addStaffMember() {
     Staff *novo = new Staff();
     string tmp;
     Date tmp_date;
+    pair<staffHtabit ,bool> testinsert;
 
     int test = 0;
     string input = "";
@@ -1338,7 +1348,29 @@ void Delegation::addStaffMember() {
     }
     novo->setFunction(tmp);
 
+    cout << "Employed (1-Yes 0-No): ";
+    getline(cin, tmp);
+    if (cin.eof()) {
+        cin.clear();
+        return; //go back on ctrl+d
+    }
+    cin.clear();
+    while (tmp != "0" && tmp != "1") {
+        cout << "Invalid value. Try again!" << endl;
+        cout << "Employed (1-Yes 0-No): ";
+        getline(cin, tmp);
+        if (cin.eof()) {
+            cin.clear();
+            return; //go back on ctrl+d
+        }
+        cin.clear();
+    }
+    novo->setEmployed(to_bool(tmp));
+
     people.push_back(novo);
+    testinsert = staff.insert(novo);
+    //cout << (testinsert.second ? "Added" : "NotAdded" ) << endl;
+    //Ver resultado acima do cout de baixo
 
     cout << endl << "Staff Member added with success!" << endl;
     cout << endl << "0 - BACK" << endl;
@@ -1378,6 +1410,18 @@ void Delegation::removeStaffMember() {
         vector<Person *>::iterator it = people.begin() + index;
         delete *it;
         people.erase(it);
+
+        staffHtabit toerase = FindPersonHash(tmp);
+        if (toerase != staff.end()) staff.erase(toerase);
+
+        /*if (toerase == staff.end())
+            cout << "Não Encontrou na HashTable";
+        else{
+            cout << "Encontrou na HashTable";
+            staff.erase(toerase);
+            cout << "Apagou da HashTable";
+        }*/
+
         cout << endl << "Staff Member removed with success!" << endl;
         cout << endl << "0 - BACK" << endl;
         do {
@@ -1642,8 +1686,18 @@ void Delegation::showStaffMembers() {
     cout << setw(19) << " " <<"Information about Staff Members" << endl;
     cout << "----------------------------------------------------------------------" << endl << endl;
 
+    if(!staff.empty()){
+        staffHtabit it = staff.begin();
+        while (it != staff.end()) {
+            (*it)->showInfoPerson();
+            cout << endl;
+            it++;
+        }
+    }
+    else
+        throw NoMembers();
 
-    if (!people.empty()) {
+    /*if (!people.empty()) {
         sort(people.begin(), people.end(), sortMembersAlphabetically<Person>);
         vector<Person *>::const_iterator it;
         for (it = people.begin(); it != people.end(); it++) {
@@ -1653,7 +1707,7 @@ void Delegation::showStaffMembers() {
             }
         }
     } else
-        throw NoMembers();
+        throw NoMembers();*/
 
     cout << endl << "0 - BACK" << endl;
     do {

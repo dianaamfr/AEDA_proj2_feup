@@ -110,6 +110,8 @@ void Staff::setEmployed(const bool &employed2) {
 Staff::Staff(const string &name, const Date &birth, const string &passport, const Date &arrival, const Date &departure,
              const string &function, const bool &employed) : Person(name, birth, passport, arrival, departure), function(function), employed(employed) {}
 
+Staff::Staff(const string &name) : Person(name, Date(1,1,2000), "CB111111", Date(31,7,2020) , Date(31,07,2020)), function("Nothing"), employed(false){}
+
 Staff::Staff():Person(){}
 
 Staff::Staff(const Staff & s) : Person(s.getName(), s.getBirth(), s.getPassport(), s.getArrival(), s.getDeparture()) {
