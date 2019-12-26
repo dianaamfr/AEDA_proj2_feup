@@ -114,6 +114,9 @@ public:
     /** Shows information about the Trial in a human friendly way*/
     void showInfo() const;
 
+    /**Show the result of the trial in an user friendly way*/
+    void showResult() const;
+
     /** Shows information about the Trial in a human friendly way (without showing the Date)*/
     void showInfoNoDate() const;
 };

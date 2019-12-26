@@ -346,12 +346,7 @@ void resultsAndRecordsMenu(Delegation & delegation){
                 }
                 break;
             case 6:
-                try{
-                    delegation.changeOrAddTokyoResults();
-                }catch(NoRecords & e){
-                    cout<< e;
-                    exceptionHandler();
-                }
+                changeOrAddTokyoResultsMenu(delegation);
                 break;
             case 0:
                 break;
@@ -712,6 +707,42 @@ void medalRankingsMenu(Delegation & delegation){
                 catch(NoMedals & e){
                     cout << e;
                 }
+                break;
+            case 0:
+                break;
+        }
+    } while (stoi(input) != 0);
+}
+
+//
+void changeOrAddTokyoResultsMenu(Delegation & delegation){
+    int testinput = 0;
+    string input;
+    do
+    {
+        if (system("CLS")) system("clear");
+        cout << "----------------------------------------------------------------------" << endl;
+        cout << setw(17) << " "<<"Tokyo 2020 Olympics Results Manager" << endl;
+        cout << "----------------------------------------------------------------------" << endl << endl;
+
+        cout << "1 - Add Result" << endl;
+        cout << "2 - Change Result" << endl;
+        cout << "0 - BACK" << endl;
+
+        do {
+            testinput = checkinputchoice(input, 0, 2);
+            if (testinput != 0 && testinput != 2)
+                cerr << "Invalid option! Please try again." << endl;
+        } while (testinput != 0 && testinput != 2);
+        if (testinput == 2)
+        { input = "0"; }
+
+        switch (stoi(input)) {
+            case 1:
+                delegation.addTokyoResult();
+                break;
+            case 2:
+                delegation.changeTokyoResult();
                 break;
             case 0:
                 break;

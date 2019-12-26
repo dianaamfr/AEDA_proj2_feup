@@ -449,8 +449,11 @@ public:
     /** Show the results of Tokyo 2020 Olympic Games*/
     void showTokyoResults() const;
 
-    /** Change or Add results of Tokyo 2020 Olympic Games*/
-    void changeOrAddTokyoResults();
+    /** Change a result of Tokyo 2020 Olympic Games*/
+    void changeTokyoResult();
+
+    /** Add a result of Tokyo 2020 Olympic Games*/
+    void Delegation::addTokyoResult();
 
 
 };

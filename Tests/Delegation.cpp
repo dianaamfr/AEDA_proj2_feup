@@ -3887,32 +3887,61 @@ void Delegation::showTokyoRecords() const{
     } while (test != 0 && test != 2);
 }
 
-void Delegation::showTokyoResults() const{
-   /* vector<Sport*>::const_iterator s;
+void Delegation::showTokyoResults() const {
+    vector<Sport *>::const_iterator s;
     Record notFound;
+    string sport;
 
-    for(s=sports.begin(); s!= sports.end(); s++){
-        if(!(*s)->isTeamSport()){ //se for um desporto individual
+    int test = 0;
+    string input = "";
+
+    system("cls");
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << setw(22) << " "<< "Tokyo 2020 Olympic Results" <<"" << endl;
+    cout << "----------------------------------------------------------------------"  << endl << endl;
+
+    for (s = sports.begin(); s != sports.end(); s++) {//para cada desporto
+        if (!(*s)->isTeamSport()) { //se    for individual vai ter resultados;
+            sport = (*s)->getName();
+            transform(sport.begin(), sport.end(), sport.begin(), ::toupper);
+            for (int j = 0; j < sport.size() * 3; j++)cout << "-";
+            cout << endl;
+            for (int j = 0; j < sport.size(); j++)cout << " ";
+            cout << sport << endl;
+            for (int j = 0; j < sport.size() * 3; j++)cout << "-";
+            cout << endl;
             vector<Competition> competitions = (*s)->getCompetitions();
             vector<Competition>::iterator c;
-            for(c=competitions.begin();c!=competitions.end();c++){ //verifica se alguma das competições existe nos recordes
-
-                    vector<Trial>trials = c->getTrials();
+            for (c = competitions.begin(); c != competitions.end(); c++) { //ou nas competições
+                if (c->getResult() != -2) { //os resultados estão nas competições
+                    c->showResult();
+                    cout << endl;
+                } else {//os resultados estão nos jogos
+                    vector<Trial> trials = c->getTrials();
                     vector<Trial>::iterator t;
-                    for(t=trials.begin(); t!=trials.end();t++){
-
-                    }
-                }
-                else{
-
+                    for (t = trials.begin(); t != trials.end(); t++) {//ou nos jogos
+                        t->showResult();
+                        cout << endl;
                     }
                 }
             }
-        }
-    }*/
+        }//se for desporto de equipa não temos resultados
+    }
+
+    cout << endl << "0 - BACK" << endl;
+    do {
+        test = checkinputchoice(input, 0, 0);
+        if (test != 0&& test != 2)
+            cerr << "Invalid option! Press 0 to go back." << endl;
+    } while (test != 0 && test != 2);
 }
 
-void Delegation::changeOrAddTokyoResults(){
+void Delegation::changeTokyoResult(){
+
+}
+
+void Delegation::addTokyoResult(){
+
 }
 
 //File Errors - Exceptions

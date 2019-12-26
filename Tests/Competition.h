@@ -148,6 +148,9 @@ public:
     /**Show the medals of the competition in an user friendly way*/
     void showMedals() const;
 
+    /**Show the result of the competition in an user friendly way*/
+    void showResult() const;
+
     /**Get the Information about the Competition in a string for testing purposes
      *
      * @returns the information about the competition

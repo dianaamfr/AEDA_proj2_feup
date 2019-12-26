@@ -158,6 +158,16 @@ void Competition::showMedals() const{
     }
 }
 
+void Competition::showResult() const {
+    string tmp = name;
+    transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
+    cout << tmp << endl;
+    cout <<  left <<setw(17) << "Date" << setw(4) << " "<< getEnd() << setw(3) <<endl;
+    cout <<  left <<setw(17) << "Result" <<setw(4) << " "<< getResult() << endl;
+    cout <<  left <<setw(17) << "Winner's Country" << setw(4) << " "<< getMedals()[0].getCountry() <<endl;
+    cout <<  left <<setw(17) << "Winner" << setw(4) << " "<< getMedals()[0].getWinner() <<endl;
+}
+
 ostream& operator<<(ostream& os, const Competition & c)
 {
     os << c.getName() << "\n";

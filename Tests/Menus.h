@@ -102,4 +102,6 @@ void medalRankingsMenu(Delegation & delegation);
  * @param delegation a delegation
  */
 void resultsAndRecordsMenu(Delegation & delegation);
+
+void changeOrAddTokyoResultsMenu(Delegation & delegation);
 #endif //PROJECT_1_MENUS_H
