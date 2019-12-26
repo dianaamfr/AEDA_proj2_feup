@@ -310,8 +310,8 @@ void Delegation::readPeopleFile(const vector<string> &lines) {
                 default:
                     throw FileStructureError(peopleFilename);
             }
-
         } else {
+            //ler funcionario
             switch (numline) {
                 case 1:
                     if (checkStringInput(line) != 0){
