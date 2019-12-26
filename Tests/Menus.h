@@ -95,4 +95,11 @@ void medalsStatisticsMenu(Delegation & delegation);
  * @param delegation a delegation
  */
 void medalRankingsMenu(Delegation & delegation);
+
+/**
+ * Display a menu that allows the user to change results of individual sports competitions/trials and to see the records
+ *
+ * @param delegation a delegation
+ */
+void resultsAndRecordsMenu(Delegation & delegation);
 #endif //PROJECT_1_MENUS_H

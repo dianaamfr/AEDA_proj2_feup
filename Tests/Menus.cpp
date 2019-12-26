@@ -46,11 +46,12 @@ void mainMenu(Delegation &delegation){
         cout << "2 - Sports Competitions" << endl;
         cout << "3 - Trials Calendar"<<endl;
         cout << "4 - Medals Statistics" << endl;
+        cout << "5 - Results & Records" << endl;
         /*cout << "5 - History" << endl;*/
         cout << "0 - EXIT" << endl;
         //checking if option is valid
         do {
-            testinput = checkinputchoice(input, 0, 4);
+            testinput = checkinputchoice(input, 0, 5);
             if (testinput != 0 && testinput != 2)
                 cerr << "Invalid option! Please try again." << endl;
         } while (testinput != 0 && testinput != 2);
@@ -69,6 +70,9 @@ void mainMenu(Delegation &delegation){
                 break;
             case 4:
                 medalsStatisticsMenu(delegation);
+                break;
+            case 5:
+                resultsAndRecordsMenu(delegation);
                 break;
             default:
                 break;
@@ -268,6 +272,86 @@ void medalsStatisticsMenu(Delegation & delegation){
                 break;
             case 3:
                 medalRankingsMenu(delegation);
+                break;
+            case 0:
+                break;
+        }
+    } while (stoi(input) != 0);
+}
+void resultsAndRecordsMenu(Delegation & delegation){
+    int testinput = 0;
+    string input;
+    do
+    {
+        if (system("CLS")) system("clear");
+        cout << "----------------------------------------------------------------------" << endl;
+        cout << setw(26) << " "<<"Results & Records" << endl;
+        cout << "----------------------------------------------------------------------" << endl << endl;
+
+        cout << "1 - All Records" << endl;
+        cout << "2 - Records by Sport" << endl;
+        cout << "3 - Records by Competition" << endl;
+        cout << "4 - Tokyo 2020 Olympics Records" <<endl;
+        cout << "5 - Tokyo 2020 Olympics Results" <<endl;
+        cout << "6 - Change/Add Tokyo 2020 Results" << endl;
+        cout << "0 - BACK" << endl;
+
+        do {
+            testinput = checkinputchoice(input, 0, 6);
+            if (testinput != 0 && testinput != 2)
+                cerr << "Invalid option! Please try again." << endl;
+        } while (testinput != 0 && testinput != 2);
+        if (testinput == 2)
+        { input = "0"; }
+
+        switch (stoi(input)) {
+            case 1:
+                try{
+                    delegation.showAllRecords();
+                }catch(NoRecords & e){
+                    cout<< e;
+                    exceptionHandler();
+                }
+                break;
+            case 2:
+                try{
+                    delegation.showRecordsBySport();
+                }catch(NoRecords & e){
+                    cout<< e;
+                    exceptionHandler();
+                }
+                break;
+            case 3:
+                try{
+                    delegation.showRecordsByCompetition();
+                }catch(NoRecords & e){
+                    cout<< e;
+                    exceptionHandler();
+                }
+                break;
+            case 4:
+                try{
+                    delegation.showTokyoRecords();
+                }catch(NoRecords & e){
+                    cout<< e;
+                    exceptionHandler();
+                }
+                break;
+            case 5:
+                try{
+                    delegation.showTokyoResults();
+                }catch(NoRecords & e){
+                    cout<< e;
+                    exceptionHandler();
+                }
+                break;
+            case 6:
+                try{
+                    delegation.changeOrAddTokyoResults();
+                }catch(NoRecords & e){
+                    cout<< e;
+                    exceptionHandler();
+                }
                 break;
             case 0:
                 break;
