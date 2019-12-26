@@ -95,7 +95,11 @@ void Trial::showInfo() const{
             cout << ", ";
     }
     cout << endl;
-    cout <<  left <<setw(17) << "Winner" << setw(4) << " "<< winner <<endl;
+    cout <<  left <<setw(17) << "Winner" << setw(4) << " ";
+    if(winner != "")
+        cout << winner <<endl;
+    else
+        cout << "No winner to show - result not available\n";
 }
 
 void Trial::showResult() const {
@@ -118,5 +122,9 @@ void Trial::showInfoNoDate() const{
     for(const auto & participant : participants)
         cout << participant <<" ";
     cout << endl;
-    cout <<  left <<setw(17) << "Winner" << setw(4) << " "<< winner <<endl;
+    cout <<  left <<setw(17) << "Winner" << setw(4) << " ";
+    if(winner != "")
+        cout << winner <<endl;
+    else
+        cout << "No winner to show - result not available\n";
 }

@@ -532,24 +532,27 @@ void Delegation::readCompetitionsFile(const vector<string> &lines) {
                 case 4:
                     //ler competições - confirmar estrutura
                     participantsStream.str(line);
-                    while (getline(participantsStream, name, ',')) {
-                        if (name.find('-') != string::npos) {
-                            pCountry = name.substr(0, name.find('-'));
-                            pCountry = regex_replace(pCountry, regex("^ +| +$|( ) +"), "$1");
-                            participant = name.substr(name.find('-') + 1, name.size());
-                            participant = regex_replace(participant, regex("^ +| +$|( ) +"), "$1");
-                            medal.setWinner(participant);
-                            medal.setCountry(pCountry);
-                            if (medalCount == 0)
-                                medal.setType('g');
-                            else if (medalCount == 1)
-                                medal.setType('s');
-                            else
-                                medal.setType('b');
-                            medals.push_back(medal);
-                            medalCount++;
+                    if(line != "-1"){
+                        while (getline(participantsStream, name, ',')) {
+                            if (name.find('-') != string::npos) {
+                                pCountry = name.substr(0, name.find('-'));
+                                pCountry = regex_replace(pCountry, regex("^ +| +$|( ) +"), "$1");
+                                participant = name.substr(name.find('-') + 1, name.size());
+                                participant = regex_replace(participant, regex("^ +| +$|( ) +"), "$1");
+                                medal.setWinner(participant);
+                                medal.setCountry(pCountry);
+                                if (medalCount == 0)
+                                    medal.setType('g');
+                                else if (medalCount == 1)
+                                    medal.setType('s');
+                                else
+                                    medal.setType('b');
+                                medals.push_back(medal);
+                                medalCount++;
+                            }
                         }
-                    }
+                    }else medals.resize(0);
+
                     if(i < lines.size()-1 && !isTeamSport){//se não for a última linha, for um desporto individual e
                         i++;
                         if(!lines[i].empty() && lines[i] != "////////" && lines[i] != "//" ){ //se não for o fim do ficheiro, o inicio de um jogo,
@@ -603,7 +606,9 @@ void Delegation::readCompetitionsFile(const vector<string> &lines) {
                     participantsStream.clear();
                     break;
                 case 5:
-                    trial.setWinner(line);
+                    if(line != "-1")
+                        trial.setWinner(line);
+                    else trial.setWinner("");
 
                     if(i < lines.size()-1 && !isTeamSport){//se não for a última linha, for um desporto individual e
                         i++;
@@ -649,6 +654,17 @@ void Delegation::writeCompetitionsFile(){
                 myfile << sports.at(i)->getCompetitions().at(j).getName() << endl;
                 myfile << sports.at(i)->getCompetitions().at(j).getBegin() << endl;
                 myfile << sports.at(i)->getCompetitions().at(j).getEnd() << endl;
+
+                if(sports.at(i)->getCompetitions().at(j).getMedals().empty()){
+                    myfile << "-1";
+                    if (i != sports.size() -1)  // se não for o ultimo deporto adicona nova linha depois das medalhas da competicao
+                        myfile << "\n";
+                    if (i == sports.size() -1)  // se for o ultimo desporto
+                    {
+                        if(j != sports.at(i)->getCompetitions().size() - 1)
+                            myfile << "\n";
+                    }
+                }
                 for (int k = 0; k < sports.at(i)->getCompetitions().at(j).getMedals().size(); ++k) {
                     myfile << sports.at(i)->getCompetitions().at(j).getMedals().at(k).getCountry() << "-"
                            << sports.at(i)->getCompetitions().at(j).getMedals().at(k).getWinner();
@@ -697,7 +713,9 @@ void Delegation::writeCompetitionsFile(){
 
                         }
                         if(sports.at(i)->getCompetitions().at(j).getTrials().at(k).getParticipants().empty()) myfile << endl;
-                        myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getWinner();
+                        if(sports.at(i)->getCompetitions().at(j).getTrials().at(k).getWinner() == "")
+                            myfile << "-1";
+                        else myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getWinner();
                         if(sports.at(i)->getCompetitions().at(j).getTrials().at(k).getResult() != -2.0){//tem result
                             myfile << endl  << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getResult();
                         }
@@ -3670,9 +3688,11 @@ void Delegation::mostAwardedAthletes() const{
 
 //Records (BST) functions
 bool newRecord(float result,float record,char comparisonCriteria){
-    if(record == -1) return true;
+    if(result == -1) return false; //se o jogo ainda não tem resultado
 
-    if(comparisonCriteria == '+'){
+    if(record == -1) return true; //se ainda não existe recorde para uma certa competição/jogo e há dados do resultado nos jogos de tóquio
+
+    if(comparisonCriteria == '+'){ //se existem dados do recorde mundial e dos jogos de Tóquio
         return (result > record);
     }
     return result < record;
@@ -3941,7 +3961,71 @@ void Delegation::changeTokyoResult(){
 }
 
 void Delegation::addTokyoResult(){
+    vector<Sport *>::const_iterator s;
+    Record notFound;
+    string sport;
 
+    int test = 0;
+    string input = "";
+
+    system("cls");
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << setw(17) << " "<< "Add the Result of a Competition/Game" <<"" << endl;
+    cout << "----------------------------------------------------------------------"  << endl << endl;
+
+    bool firstSportComp = true;
+    vector<string> noResults;
+
+    //show the comeptitions/games without result
+    for (s = sports.begin(); s != sports.end(); s++) {//para cada desporto
+        if (!(*s)->isTeamSport()) { //se    for individual vai ter resultados;
+            sport = (*s)->getName();
+            transform(sport.begin(), sport.end(), sport.begin(), ::toupper);
+            vector<Competition> competitions = (*s)->getCompetitions();
+            vector<Competition>::iterator c;
+            firstSportComp = true;
+            for (c = competitions.begin(); c != competitions.end(); c++) { //ou nas competições
+                if (c->getResult() == -1) { //os resultados estão nas competições
+                    if(firstSportComp){
+                        for (int j = 0; j < sport.size() * 3; j++)cout << "-";
+                        cout << endl;
+                        for (int j = 0; j < sport.size(); j++)cout << " ";
+                        cout << sport << endl;
+                        for (int j = 0; j < sport.size() * 3; j++)cout << "-";
+                        cout << endl;
+                        firstSportComp = false;
+                    }
+                    cout << c->getName() << endl;
+                    noResults.push_back(c->getName());
+                } else {//os resultados estão nos jogos
+                    vector<Trial> trials = c->getTrials();
+                    vector<Trial>::iterator t;
+                    for (t = trials.begin(); t != trials.end(); t++) {//ou nos jogos
+                        if (t->getResult() == -1) {
+                            if(firstSportComp){
+                                for (int j = 0; j < sport.size() * 3; j++)cout << "-";
+                                cout << endl;
+                                for (int j = 0; j < sport.size(); j++)cout << " ";
+                                cout << sport << endl;
+                                for (int j = 0; j < sport.size() * 3; j++)cout << "-";
+                                cout << endl;
+                                firstSportComp = false;
+                            }
+                            cout << t->getName() << endl;
+                            noResults.push_back(t->getName());
+                        }
+                    }
+                }
+            }
+        }//se for desporto de equipa não temos resultados
+    }
+
+    cout << endl << "0 - BACK" << endl;
+    do {
+        test = checkinputchoice(input, 0, 0);
+        if (test != 0&& test != 2)
+            cerr << "Invalid option! Press 0 to go back." << endl;
+    } while (test != 0 && test != 2);
 }
 
 //File Errors - Exceptions

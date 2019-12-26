@@ -137,13 +137,16 @@ void Competition::showInfo() const{
         cout << endl;
     }
     cout <<  left <<setw(17) << "Winners" << setw(4) <<endl;
-    for(const auto & medal : getMedals()){
-        if(medal.getType() == 'g')
-            cout << left << setw(2) <<left << "->" << left <<setw(15) << "Gold" << setw(4) << " "<< medal.getWinner() << setw(3) <<endl;
-        else if(medal.getType() == 's')
-            cout <<left << setw(2) << "->" << left <<setw(15) << "Silver" << setw(4) << " "<< medal.getWinner() << setw(3) <<endl;
-        else
-            cout << left << setw(2) << "->" << left <<setw(15) << "Bronze" << setw(4) << " "<< medal.getWinner() << setw(3) <<endl;
+    if(getMedals().empty()) cout << "No Winners/Medals to show - result not available\n";
+    else{
+        for(const auto & medal : getMedals()){
+            if(medal.getType() == 'g')
+                cout << left << setw(2) <<left << "->" << left <<setw(15) << "Gold" << setw(4) << " "<< medal.getWinner() << setw(3) <<endl;
+            else if(medal.getType() == 's')
+                cout <<left << setw(2) << "->" << left <<setw(15) << "Silver" << setw(4) << " "<< medal.getWinner() << setw(3) <<endl;
+            else
+                cout << left << setw(2) << "->" << left <<setw(15) << "Bronze" << setw(4) << " "<< medal.getWinner() << setw(3) <<endl;
+        }
     }
 }
 

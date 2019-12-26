@@ -67,8 +67,8 @@ Athletics
 100mts
 03/08/2020
 03/08/2020
-Portugal-Carla Salome Rocha,Portugal-Ana Dulce Ferreira Felix,Japan-Yuma Hattori
-10.5
+-1
+-1
 
 200mts
 04/08/2020
@@ -139,8 +139,8 @@ Scratch race
 3
 01/08/2020
 Denmark-Lasse Norman Hansen,Portugal-Ivo Emanuel Alves Oliveira,Portugal-Maria Carolina Martins
-Maria Carolina Martins
-11.66
+-1
+-1
 //
 Tempo race
 3
