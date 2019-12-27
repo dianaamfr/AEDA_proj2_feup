@@ -18,6 +18,7 @@ struct staffHash
 {
     int operator() (Staff* const& st) const
     {
+        //string temp = st->getPassport();
         return st->getName().size();
     }
     bool operator() (Staff* const& st1, Staff* const& st2) const
@@ -27,6 +28,7 @@ struct staffHash
 };
 typedef unordered_set<Staff*,staffHash, staffHash> staffHtab;
 typedef unordered_set<Staff*,staffHash, staffHash>::iterator staffHtabit;
+typedef std::unordered_set<Staff*, staffHash, staffHash>::const_iterator staffHtabcit;
 
 /**
  * A class to store the general information about a Delegation that takes part in the 2020 Tokyo Olympic Games
@@ -230,7 +232,7 @@ public:
     /**Returns staff.end() or a iterator to the Staff* in the hashtable
      * @param name Staff name
      * */
-    staffHtabit FindPersonHash(const string & name);
+    staffHtabcit FindPersonHash(const string & name) const;
 
     /**
     * Find a Sport in the sports vector

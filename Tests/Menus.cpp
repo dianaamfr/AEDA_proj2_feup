@@ -14,14 +14,13 @@ int checkinputchoice(string& test, int lowerlimit, int upperlimit) {
         getline(cin, test);
         if (cin.eof()){
             cin.clear();
-            return 2;//go back on ctrl+d
+            return 2; //go back on ctrl+z
         }
-
     } while (test.length() == 0);
     test = regex_replace(test, regex("^ +| +$|( ) +"), "$1"); // remove espaços no fim, inicio e meio
-    for (unsigned int i = 0; i < test.length(); i++)
+    for (char i : test)
     {
-        if (!isdigit(test[i]))//se não for um dígito não é uma opção válida
+        if (!isdigit(i))//se não for um dígito não é uma opção válida
             return 1;
     }
     if (stoi(test) < lowerlimit || stoi(test) > upperlimit) //se não estiver dentro dos limites
