@@ -167,3 +167,7 @@ bool caseInSensStringCompare(const string & str1, const string &str2)
 {
     return ( (str1.size() == str2.size() ) && equal(str1.begin(), str1.end(), str2.begin(), compareChar) );
 }
+
+bool to_bool(string const& s) {
+    return s != "0";
+}

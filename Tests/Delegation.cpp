@@ -85,8 +85,10 @@ void Delegation::readDelegationFile() {
                 break;
             case 5:
                 peopleFilename = regex_replace(line, regex("^ +| +$|( ) +"), "$1");
-                if (checkStringInput(line) != 0)
+                if (checkStringInput(line) != 0){
                     throw FileStructureError(file);
+                }
+
                 break;
             case 6:
                 teamsFilename = regex_replace(line, regex("^ +| +$|( ) +"), "$1");
@@ -210,6 +212,7 @@ void Delegation::readPeopleFile(const vector<string> &lines) {
     bool readFunc = false;
     Athlete *a = nullptr;
     Staff *s = nullptr;
+    pair<staffHtabit ,bool> testinsert;
     //Variables to read Competitions:
     istringstream competitionsStream;
     string compStr;
@@ -226,7 +229,7 @@ void Delegation::readPeopleFile(const vector<string> &lines) {
         }
 
         if (numline == 1) { // se for a primeira linha de uma pessoa vamos ver se é funcionário ou atleta
-            readFunc = lines[i + 6].empty();
+            readFunc = lines[i + 7].empty();
             competitions.resize(0);
             a = new Athlete();
             s = new Staff();
@@ -310,8 +313,10 @@ void Delegation::readPeopleFile(const vector<string> &lines) {
                 default:
                     throw FileStructureError(peopleFilename);
             }
-
-        } else {
+        }
+        else {
+            //ler funcionario
+            Staff* temp = nullptr;
             switch (numline) {
                 case 1:
                     if (checkStringInput(line) != 0){
@@ -356,7 +361,18 @@ void Delegation::readPeopleFile(const vector<string> &lines) {
                         throw FileStructureError(peopleFilename);
                     }
                     s->setFunction(line);
-                    people.push_back(new Staff(*s));
+                    break;
+                case 7:
+                    if (checkPositiveIntInput(line) != 0){
+                        cout << "here" << endl;
+                        throw FileStructureError(peopleFilename);
+                    }
+                    s->setEmployed(to_bool(line));
+                    temp = new Staff(*s);
+                    people.push_back(temp);
+                    testinsert = staff.insert(temp);
+                    //cout << (testinsert.second ? "Added" : "NotAdded" ) << endl;
+                    // necessário tirar o clean screen do main menu para verificar resultados
                     break;
                 default:
                     throw FileStructureError(peopleFilename);
@@ -383,7 +399,8 @@ void Delegation::writePeopleFile(){
             }
             else{
                 Staff* a = dynamic_cast<Staff *> (people.at(i));
-                myfile << a->getFunction();
+                myfile << a->getFunction() << endl;
+                myfile << a->getEmployed();
             }
             if (i != people.size()-1)
                 myfile << endl << endl;
@@ -1198,11 +1215,18 @@ int Delegation::findPerson(const string & name) const {
     return -1;
 }
 
+staffHtabcit Delegation::FindPersonHash(const string & name) const {
+    std::unordered_set<Staff*, staffHash, staffHash>::const_iterator a;
+    Staff* temp = new Staff(name);
+    a = staff.find(temp);
+    return a;
+}
 //Staff Functions
 void Delegation::addStaffMember() {
-    Staff *novo = new Staff();
+    Staff* novo = new Staff();
     string tmp;
     Date tmp_date;
+    pair<staffHtabit ,bool> testinsert;
 
     int test = 0;
     string input = "";
@@ -1325,7 +1349,29 @@ void Delegation::addStaffMember() {
     }
     novo->setFunction(tmp);
 
+    cout << "Employed (1-Yes 0-No): ";
+    getline(cin, tmp);
+    if (cin.eof()) {
+        cin.clear();
+        return; //go back on ctrl+d
+    }
+    cin.clear();
+    while (tmp != "0" && tmp != "1") {
+        cout << "Invalid value. Try again!" << endl;
+        cout << "Employed (1-Yes 0-No): ";
+        getline(cin, tmp);
+        if (cin.eof()) {
+            cin.clear();
+            return; //go back on ctrl+d
+        }
+        cin.clear();
+    }
+    novo->setEmployed(to_bool(tmp));
+
     people.push_back(novo);
+    testinsert = staff.insert(novo);
+    //cout << (testinsert.second ? "Added" : "NotAdded" ) << endl;
+    //Ver resultado acima do cout de baixo
 
     cout << endl << "Staff Member added with success!" << endl;
     cout << endl << "0 - BACK" << endl;
@@ -1365,6 +1411,18 @@ void Delegation::removeStaffMember() {
         vector<Person *>::iterator it = people.begin() + index;
         delete *it;
         people.erase(it);
+
+        staffHtabcit toerase = FindPersonHash(tmp);
+        if (toerase != staff.end()) staff.erase(toerase);
+
+        /*if (toerase == staff.end())
+            cout << "Não Encontrou na HashTable";
+        else{
+            cout << "Encontrou na HashTable";
+            staff.erase(toerase);
+            cout << "Apagou da HashTable";
+        }*/
+
         cout << endl << "Staff Member removed with success!" << endl;
         cout << endl << "0 - BACK" << endl;
         do {
@@ -1398,7 +1456,11 @@ void Delegation::changeStaffMember() {
         }
         cin.clear();
     }
+
     index = findPerson(tmp);
+    staffHtabcit tochange = FindPersonHash(tmp);
+    Staff* toc;
+
     if (index == -1 || people.at(index)->isAthlete()) {
         throw NonExistentStaff(tmp);
     } else {
@@ -1415,10 +1477,11 @@ void Delegation::changeStaffMember() {
         cout << "4 - Date of Arrival" << endl;
         cout << "5 - Date of Departure" << endl;
         cout << "6 - Function" << endl;
+        cout << "7 - Employment" << endl;
         cout << "0 - BACK" << endl;
 
         do {
-            test = checkinputchoice(input, 0, 6);
+            test = checkinputchoice(input, 0, 7);
             if (test != 0 && test != 2)
                 cerr << "Invalid option! Please try again." << endl;
         } while (test != 0 && test != 2);
@@ -1445,7 +1508,13 @@ void Delegation::changeStaffMember() {
                     }
                     cin.clear();
                 }
-                people.at(index)->setName(tmp);
+
+                toc = *tochange;
+                staff.erase(tochange);
+                toc->setName(tmp);
+                staff.insert(toc);
+
+                //people.at(index)->setName(tmp);
                 break;
             case 2:
                 cout << "Date of Birth: ";
@@ -1465,7 +1534,13 @@ void Delegation::changeStaffMember() {
                     }
                     cin.clear();
                 }
-                people.at(index)->setBirth(tmp_date);
+
+                toc = *tochange;
+                staff.erase(tochange);
+                toc->setBirth(tmp_date);
+                staff.insert(toc);
+
+                //people.at(index)->setBirth(tmp_date);
                 break;
             case 3:
                 cout << "Passport: ";
@@ -1485,7 +1560,13 @@ void Delegation::changeStaffMember() {
                     }
                     cin.clear();
                 }
-                people.at(index)->setPassport(tmp);
+
+                toc = *tochange;
+                staff.erase(tochange);
+                toc->setPassport(tmp);
+                staff.insert(toc);
+
+                //people.at(index)->setPassport(tmp);
                 break;
             case 4:
                 cout << "Date of Arrival: ";
@@ -1505,7 +1586,13 @@ void Delegation::changeStaffMember() {
                     }
                     cin.clear();
                 }
-                people.at(index)->setArrival(tmp_date);
+
+                toc = *tochange;
+                staff.erase(tochange);
+                toc->setArrival(tmp_date);
+                staff.insert(toc);
+
+                //people.at(index)->setArrival(tmp_date);
                 break;
             case 5:
                 cout << "Date of Departure: ";
@@ -1525,7 +1612,13 @@ void Delegation::changeStaffMember() {
                     }
                     cin.clear();
                 }
-                people.at(index)->setDeparture(tmp_date);
+
+                toc = *tochange;
+                staff.erase(tochange);
+                toc->setDeparture(tmp_date);
+                staff.insert(toc);
+
+                //people.at(index)->setDeparture(tmp_date);
                 break;
             case 6:
                 cout << "Function: ";
@@ -1545,14 +1638,46 @@ void Delegation::changeStaffMember() {
                     }
                     cin.clear();
                 }
-                if (!people.at(index)->isAthlete()) {
+
+                toc = *tochange;
+                staff.erase(tochange);
+                toc->setFunction(tmp);
+                staff.insert(toc);
+
+                /*if (!people.at(index)->isAthlete()) {
                     Staff *s = dynamic_cast<Staff *> (people.at(index));
                     if (s == NULL) {
                         cout << "Couldn't change function!" << endl;
-                    } else {
+                    } else
                         s->setFunction(tmp);
-                    }
+                }*/
+
+                break;
+            case 7:
+                cout << "Employed (1-Yes 0-No): ";
+                getline(cin, tmp);
+                if (cin.eof()) {
+                    cin.clear();
+                    return; //go back on ctrl+d
                 }
+                cin.clear();
+                while (tmp != "0" && tmp != "1") {
+                    cout << "Invalid value. Try again!" << endl;
+                    cout << "Employed (1-Yes 0-No): ";
+                    getline(cin, tmp);
+                    if (cin.eof()) {
+                        cin.clear();
+                        return; //go back on ctrl+d
+                    }
+                    cin.clear();
+                }
+
+                toc = *tochange;
+                staff.erase(tochange);
+                toc->setEmployed(to_bool(tmp));
+                staff.insert(toc);
+
+                //people.at(index)->setEmployed(to_bool(tmp));
                 break;
             case 0:
                 break;
@@ -1579,10 +1704,10 @@ void Delegation::showStaffMember() const {
     cout << setw(19) << " "<<"Information about a Staff Member" << endl;
     cout << "----------------------------------------------------------------------" << endl << endl;
 
-
-    if (!people.empty()) {
-        int test = 0;
-        int index;
+    if (!staff.empty()) {
+        // to use with vector people
+        /*int test = 0;
+        int index;*/
         string input = "", tmp;
 
         cout << "Name: ";
@@ -1602,13 +1727,23 @@ void Delegation::showStaffMember() const {
             }
             cin.clear();
         }
-        index = findPerson(tmp);
+
+        staffHtabcit toview = FindPersonHash(tmp);
+        if (toview == staff.end())
+            throw NonExistentStaff(tmp);
+        else{
+            cout << endl;
+            (*toview)->showInfoPerson();
+        }
+
+        // to use with vector people
+        /*index = findPerson(tmp);
         if (index == -1 || people.at(index)->isAthlete())
             throw NonExistentStaff(tmp);
         else {
             cout << endl;
             (*(people.begin() + index))->showInfoPerson();
-        }
+        }*/
     } else
         throw NoMembers();
 
@@ -1625,12 +1760,42 @@ void Delegation::showStaffMembers() {
     string input = "";
 
     system("cls");
-    cout << "----------------------------------------------------------------------" << endl;
-    cout << setw(19) << " " <<"Information about Staff Members" << endl;
-    cout << "----------------------------------------------------------------------" << endl << endl;
+    if(!staff.empty()){
+        cout << "----------------------------------------------------------------------" << endl;
+        cout << setw(19) << " " <<"Information about Staff Members" << endl;
+        cout << "----------------------------------------------------------------------" << endl << endl;
 
+        cout << "1 - Employed" << endl;
+        cout << "2 - Not Employed" << endl;
+        cout << "0 - BACK" << endl;
 
-    if (!people.empty()) {
+        do {
+            test = checkinputchoice(input, 0, 2);
+            if (test != 0 && test != 2)
+                cerr << "Invalid option! Please try again." << endl;
+        } while (test != 0 && test != 2);
+        if (test == 2) { input = "0"; }
+
+        if (input != "0"){
+            staffHtabit it = staff.begin();
+            while (it != staff.end()) {
+                if (input == "1" && (*it)->getEmployed()){
+                    (*it)->showInfoPerson();
+                    cout << endl;
+                }
+                if (input == "2" && !(*it)->getEmployed()){
+                    (*it)->showInfoPerson();
+                    cout << endl;
+                }
+                it++;
+            }
+        }
+
+    }
+    else
+        throw NoMembers();
+
+    /*if (!people.empty()) {
         sort(people.begin(), people.end(), sortMembersAlphabetically<Person>);
         vector<Person *>::const_iterator it;
         for (it = people.begin(); it != people.end(); it++) {
@@ -1640,7 +1805,7 @@ void Delegation::showStaffMembers() {
             }
         }
     } else
-        throw NoMembers();
+        throw NoMembers();*/
 
     cout << endl << "0 - BACK" << endl;
     do {

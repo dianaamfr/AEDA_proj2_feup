@@ -14,7 +14,7 @@
  * @param test the number to check
  * @param lowerlimit the minimum number(option) accepted by the menu
  * @param upperlimit the maximum number(option) accpeted by the menu
- * @returns 0 if the option exists in the menu and 1 otherwise
+ * @returns 0 if the option exists in the menu, 1 if out-of.range or not a digit and 2 for ctrl+z
  */
 int checkinputchoice(string& test, int lowerlimit, int upperlimit);
 

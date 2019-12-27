@@ -1,0 +1,95 @@
+Info do pdf:
+A delegação quer agora manter um registo de todos os seus funcionários (atuais ou antigos) numa tabela de dispersão. 
+A manutenção do registo de funcionários antigos da empresa justifica-se porque, no caso de necessidade de contratação de novos funcionários, a delegação tem como política interna a contratação de funcionários já conhecidos. 
+Devem ser permitidas listagens ou pesquisas de funcionários, dos diversos tipos, atuais e antigos, a especificar .
+____________________________________________________________________________________________
+HashTable com funcionários (atuais e antigos)
+
+A implementar:
+	- Possibilitar listagens
+		- mostrar todos os funcionários
+		-    ''   funcionarios antigos
+		-    ''   funcionario atuais
+	- Possibilitar pesquisas
+		- funcionários atuais
+		- funcionários antigos
+		- por nome
+
+
+A fazer:
+	- people.txt
+		-X nova linha para atual/antigo em cada funcinario
+		-X adicionar mais funcionários
+	- Person.h
+		-X private: adicinar bool employed	
+		-X mudar parametro em constructor
+		-x criar set e get de employement
+	- Person.cpp
+		-x Mudar constructores (com parametros e de cópia) para adicionar novo bool
+		-x Implementar Get e Set de employment
+		-x modificar info()		[Ver se fica bem]Done
+		-x modificar showInfoPerson()	[Ver se fica bem]Done
+	- auxiliar.h
+		-x adicionar função to_bool()
+	- auxiliar.cpp
+		-x declarar nova função
+	- Delegation.h
+		-x nas linhas anteriores á declaração da classe Delegation - criar struct hashFunc com operator() [comparar pointers]
+		-x private - adicionar unordered_set<Staff*, hashFunc, hashFunc> staff
+	- Delegation.cpp
+		- alterar readPeopleFile 
+			-x adicionar um caso no switch de l.316 para ler employment
+			-x passar linha 360 (people.push_back(new Staff(*s));) para case 7: e para além de adicionar a vector<Person*> people, adiconar também a unordered_set staff
+			-x mudar linha 230 de (readFunc = lines[i + 6].empty();) para [readFunc = lines[i + 7].empty();]
+		- alterar writePeopleFile
+			-x linha 387 - a seguir adicionar employment
+			-|| Possivel mudança, adicionar staff a partir de HashTable e Atletas a partir de people
+
+↑ Mudanças a ficheiro people.txt leitura e escrita no ficheiro, leitura de dados para memória ↑
+↓ Implementações com a HashTable ↓
+ (Main Menu -> 1-Members -> 3-Staff)
+Opções:	1 Add
+	2 Remove
+	3 Change
+	4 Show 1
+	5 Show All
+
+	Para 1 Add:
+	- Delegation.cpp
+		addStaffMember()
+		-x l.1305 adicionar pedaço para adiconar employment
+		-x l.1306 para além de adiconar a people, adicionar á hashtable  
+		[Possivel alteração na linha 1245 para FindPerson - procurar na hashtable em vez de vetor ¯\_(ツ)_/¯ ]
+		-x Criar FindPersonHash (também está em Delegation.h)
+	Para 2 Remove:
+	- Delegation.cpp
+		-x removeStaffMember()
+		-x l.1345 adiconar tambem remover da hashtable
+	Para 3 Change:
+	- Delegation.cpp
+		changeStaffMember() - Agora a mudar a partir da hashtable 👍
+		-x adicionar no menu "7 - Employment"
+		-x mudar checkinputchoice upperlimir = 7
+		-x Adicionar case 7: ao switch (ir pedaço de código á função de Add)
+		-x em cada caso em vez de [people.at(index)->setName(tmp);] no final do case, ter uma mudança feita no pointer de Staff a partir da HashTable
+	Para 4 Show 1:
+	- Delegation.cpp
+		x showStaffMember() [mais trabalhosa]
+		Por enquanto está só pesquisa por nome, se der vontade faz-se como em baixo ¯\_(ツ)_/¯
+		(Criar SubMenu para pesquisar por nome, employed ou não employed)
+		(se escolher employed ou não employed, vista de só nomes com numeros á esquerda para escolher um número e ver detalhes)
+	Para 5 Show All:
+	- Delegation.cpp
+		x showStaffMembers()
+	(Mudar para mostrar employed primeiro _____________ not employed depois) <- Não foi feito isto, invés -> opção para ver qual quer mostrar
+		
+
+
+Mudanças Extra: Not Implemented
+Identificar pessoas pelo passaporte e não nome
+	-x Hash Table guiada pelo passport
+	- adiconar pessoa - 1º pedido é passport
+	- eliminar pessoa - o pedido é passport
+	- change pessoa - o pedido é passport
+		
+		

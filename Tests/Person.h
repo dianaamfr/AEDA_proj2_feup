@@ -331,6 +331,7 @@ public:
 /**A class to store the general information about a member of the Staff*/
 class Staff: public Person{
     string function;/**< The function of the Staff member*/
+    bool employed; /**< True if the staff member is currently hired*/
 public:
     /**Staff default constructor*/
     Staff();
@@ -344,7 +345,12 @@ public:
      * @param function the function of the member of the Staff
      */
     Staff(const string &name, const Date &birth, const string &passport, const Date &arrival, const Date &departure,
-          const string &function);
+          const string &function, const bool &employed);
+
+    /** Staff constructor with only name to use with find()
+     * @param name the name of the staff member
+     * */
+    Staff(const string &name);
 
     /**Staff copy constructor
      *@param s Staff member to copy info from
@@ -359,7 +365,17 @@ public:
     /** Set the name function of the staff member
     * @param function the function of the staff member
     */
-    void setFunction(const string &function);
+    void setFunction(const string &function2);
+
+    /** True if the staff member is employed
+    * @returns the bool employed of the staff member
+    */
+    const bool &getEmployed() const;
+
+    /** Set the employed bool of the staff member
+    * @param employed the bool value of the employment of the staff member
+    */
+    void setEmployed(const bool &employed2);
 
     /**Show the information about the Staff member in a user friendly way*/
     string info();

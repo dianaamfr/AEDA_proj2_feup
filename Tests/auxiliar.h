@@ -181,4 +181,6 @@ bool compareChar(const char & c1, const char & c2);
  */
 bool caseInSensStringCompare(const string & str1, const string &str2);
 
+bool to_bool(string const& st);
+
 #endif //PROJECT_1_INPUTCHECK_H

@@ -12,6 +12,23 @@
 #include "Sport.h"
 #include "Record.h"
 #include "BST.h"
+#include <unordered_set>
+
+struct staffHash
+{
+    int operator() (Staff* const& st) const
+    {
+        //string temp = st->getPassport();
+        return st->getName().size();
+    }
+    bool operator() (Staff* const& st1, Staff* const& st2) const
+    {
+        return (st1->getName() == st2->getName());
+    }
+};
+typedef unordered_set<Staff*,staffHash, staffHash> staffHtab;
+typedef unordered_set<Staff*,staffHash, staffHash>::iterator staffHtabit;
+typedef std::unordered_set<Staff*, staffHash, staffHash>::const_iterator staffHtabcit;
 
 /**
  * A class to store the general information about a Delegation that takes part in the 2020 Tokyo Olympic Games
@@ -31,6 +48,7 @@ class Delegation {
     vector<Team*> teams;/**< All the teams of the Delegation*/
     vector<Sport*> sports;/**< All the sports of the Delegation*/
     BST<Record> records; /**<World Records in the competitions the delegation takes part in*/
+    staffHtab staff; /**< HashTable for staff pointers - Staff is also stored in people*/
 public:
 
     friend bool newRecord(float result,float record,char comparisonCriteria);
@@ -209,7 +227,12 @@ public:
    * @params name the name of the Person
    * @returns the index of the Person, -1 if it does not exist
    */
-   int findPerson(const string & name) const;
+    int findPerson(const string & name) const;
+
+    /**Returns staff.end() or a iterator to the Staff* in the hashtable
+     * @param name Staff name
+     * */
+    staffHtabcit FindPersonHash(const string & name) const;
 
     /**
     * Find a Sport in the sports vector

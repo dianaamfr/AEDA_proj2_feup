@@ -198,12 +198,21 @@ Women's Doubles
 55
 163
 
-Carlos Dias
+Antonio Saraiva
+05/05/1980
+CB469475
+28/07/2020
+04/08/2020
+Manager
+1
+
+Carlos Paiva
 09/09/1993
 CB009404
 26/07/2020
 07/08/2020
 Cleaning
+1
 
 Catarina Freitas
 27/08/1996
@@ -211,6 +220,7 @@ CB643432
 28/07/2020
 05/08/2020
 Cleaning
+0
 
 Julio Pinto da Silva
 10/03/1980
@@ -218,3 +228,4 @@ CB007804
 25/07/2020
 07/08/2020
 Cook
+1
