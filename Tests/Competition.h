@@ -157,6 +157,10 @@ public:
      */
     string info() const;
 
+    /**Compare two competitions to check if they have the same name
+    * @param c2 The competition to compare with this one
+    * @returns true if they are equal and false otherwise
+    */
     bool operator== (const Competition & c2) const;
 };
 

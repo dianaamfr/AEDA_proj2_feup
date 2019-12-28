@@ -455,7 +455,6 @@ public:
     /** Add a result of Tokyo 2020 Olympic Games*/
     void addTokyoResult();
 
-
 };
 
 //Exceptions

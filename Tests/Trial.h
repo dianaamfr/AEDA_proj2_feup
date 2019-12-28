@@ -120,6 +120,10 @@ public:
     /** Shows information about the Trial in a human friendly way (without showing the Date)*/
     void showInfoNoDate() const;
 
+    /**Compare two trials to check if they have the same name
+     * @param t2 The trial to compare with this one
+     * @returns true if they are equal and false otherwise
+     */
     bool operator== (const Trial & t2) const;
 
 };

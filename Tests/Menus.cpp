@@ -714,7 +714,7 @@ void medalRankingsMenu(Delegation & delegation){
     } while (stoi(input) != 0);
 }
 
-//
+
 void changeOrAddTokyoResultsMenu(Delegation & delegation){
     int testinput = 0;
     string input;
