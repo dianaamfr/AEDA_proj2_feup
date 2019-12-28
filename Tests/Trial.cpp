@@ -4,6 +4,7 @@
 
 #include "Trial.h"
 #include <iomanip>
+#include <algorithm>
 
 const string & Trial::getName() const{
     return name;
@@ -94,7 +95,25 @@ void Trial::showInfo() const{
             cout << ", ";
     }
     cout << endl;
-    cout <<  left <<setw(17) << "Winner" << setw(4) << " "<< winner <<endl;
+    cout <<  left <<setw(17) << "Winner" << setw(4) << " ";
+    if(winner != "")
+        cout << winner <<endl;
+    else
+        cout << "No winner to show - result not available\n";
+}
+
+void Trial::showResult() const {
+    string tmp = name;
+    transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
+    cout <<  left <<setw(17) << tmp <<endl;
+    cout <<  left <<setw(17) << "Date" << setw(4) << " "<< getDate() << setw(3) <<endl;
+    cout <<  left <<setw(17) << "Result" <<setw(4) << " "<< getResult() << endl;
+    cout <<  left <<setw(17) << "Winner's Country" << setw(4) << " ";
+    for(unsigned int i = 0; i< participants.size(); i++){
+        if(participants[i] == getWinner())
+            cout << countries[i]<<endl;
+    }
+    cout <<  left <<setw(17) << "Winner" << setw(4) << " "<< getWinner() <<endl;
 }
 
 void Trial::showInfoNoDate() const{
@@ -103,5 +122,13 @@ void Trial::showInfoNoDate() const{
     for(const auto & participant : participants)
         cout << participant <<" ";
     cout << endl;
-    cout <<  left <<setw(17) << "Winner" << setw(4) << " "<< winner <<endl;
+    cout <<  left <<setw(17) << "Winner" << setw(4) << " ";
+    if(winner != "")
+        cout << winner <<endl;
+    else
+        cout << "No winner to show - result not available\n";
+}
+
+bool Trial::operator == (const Trial & t2) const{
+    return getName() == t2.getName();
 }

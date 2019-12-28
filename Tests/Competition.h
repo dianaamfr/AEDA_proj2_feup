@@ -148,11 +148,20 @@ public:
     /**Show the medals of the competition in an user friendly way*/
     void showMedals() const;
 
+    /**Show the result of the competition in an user friendly way*/
+    void showResult() const;
+
     /**Get the Information about the Competition in a string for testing purposes
      *
      * @returns the information about the competition
      */
     string info() const;
+
+    /**Compare two competitions to check if they have the same name
+    * @param c2 The competition to compare with this one
+    * @returns true if they are equal and false otherwise
+    */
+    bool operator== (const Competition & c2) const;
 };
 
 /** Shows the name of the Competition for testing purposes

@@ -114,8 +114,18 @@ public:
     /** Shows information about the Trial in a human friendly way*/
     void showInfo() const;
 
+    /**Show the result of the trial in an user friendly way*/
+    void showResult() const;
+
     /** Shows information about the Trial in a human friendly way (without showing the Date)*/
     void showInfoNoDate() const;
+
+    /**Compare two trials to check if they have the same name
+     * @param t2 The trial to compare with this one
+     * @returns true if they are equal and false otherwise
+     */
+    bool operator== (const Trial & t2) const;
+
 };
 
 /** Prints info about the Trial for testing purposes
@@ -124,5 +134,6 @@ public:
    * @returns reference to the original ostream to allow input/output chains
    */
 ostream& operator<<(ostream& os, const Trial & g);
+
 
 #endif //PROJECT_1_TRIAL_H
