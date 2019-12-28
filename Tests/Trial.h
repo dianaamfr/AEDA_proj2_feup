@@ -119,6 +119,9 @@ public:
 
     /** Shows information about the Trial in a human friendly way (without showing the Date)*/
     void showInfoNoDate() const;
+
+    bool operator== (const Trial & t2) const;
+
 };
 
 /** Prints info about the Trial for testing purposes
@@ -127,5 +130,6 @@ public:
    * @returns reference to the original ostream to allow input/output chains
    */
 ostream& operator<<(ostream& os, const Trial & g);
+
 
 #endif //PROJECT_1_TRIAL_H

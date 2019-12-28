@@ -176,3 +176,7 @@ ostream& operator<<(ostream& os, const Competition & c)
     os << c.getName() << "\n";
     return os;
 }
+
+bool Competition::operator == (const Competition & c2) const{
+    return name == c2.getName();
+}

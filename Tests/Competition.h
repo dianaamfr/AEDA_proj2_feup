@@ -156,6 +156,8 @@ public:
      * @returns the information about the competition
      */
     string info() const;
+
+    bool operator== (const Competition & c2) const;
 };
 
 /** Shows the name of the Competition for testing purposes
