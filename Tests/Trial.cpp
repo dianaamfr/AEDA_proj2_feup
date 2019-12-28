@@ -130,5 +130,5 @@ void Trial::showInfoNoDate() const{
 }
 
 bool Trial::operator == (const Trial & t2) const{
-    return name == t2.getName();
+    return getName() == t2.getName();
 }

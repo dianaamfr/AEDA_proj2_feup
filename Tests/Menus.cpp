@@ -739,7 +739,12 @@ void changeOrAddTokyoResultsMenu(Delegation & delegation){
 
         switch (stoi(input)) {
             case 1:
-                delegation.addTokyoResult();
+                try{
+                    delegation.addTokyoResult();
+                }catch(NoMissingResults & c){
+                    cout << c ;
+                    exceptionHandler();
+                }
                 break;
             case 2:
                 delegation.changeTokyoResult();

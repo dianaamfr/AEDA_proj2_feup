@@ -178,5 +178,5 @@ ostream& operator<<(ostream& os, const Competition & c)
 }
 
 bool Competition::operator == (const Competition & c2) const{
-    return name == c2.getName();
+    return getName() == c2.getName();
 }

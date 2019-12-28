@@ -764,4 +764,19 @@ public:
     /** No Records Default Constructor*/
     explicit NoRecords();
 };
+
+/**
+ *  An exception thrown when there are no results missing
+ */
+class NoMissingResults{
+public:
+    /** Indicates that no results are missing
+    * @param os the name of the ostream
+    * @param s NoMissingResults object
+    * @returns reference to the original ostream to allow input/output chains
+    */
+    friend ostream & operator <<(ostream & os, const NoMissingResults & s);
+    /** No Missing Results Default Constructor*/
+    explicit NoMissingResults();
+};
 #endif //PROJECT_1_DELEGATION_H
