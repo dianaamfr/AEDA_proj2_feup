@@ -3935,8 +3935,10 @@ void Delegation::showAllRecords() const{
 
     BSTItrIn<Record> bstit(records);
     while(!bstit.isAtEnd()){
-        bstit.retrieve().showInfo();
-        cout << endl;
+        if(bstit.retrieve().getRecord() != -1){
+            bstit.retrieve().showInfo();
+            cout << endl;
+        }
         bstit.advance();
     }
     if(records.isEmpty()) throw NoRecords();
@@ -4006,29 +4008,32 @@ void Delegation::showRecordsByCompetition() const{
     cout << setw(15) << " "<< "All-Time Olympic Records by Competition" <<"" << endl;
     cout << "----------------------------------------------------------------------"  << endl << endl;
 
-    bool found = false,failed=true;
-    string sp;
+    bool found = false,failed;
+    string c;
 
     do{
-        cout << "Choose a competition: ";
-        getline(cin,sp);
+        cout << "Choose a competition/trial: ";
+        getline(cin,c);
         if (cin.eof()){
             cin.clear();
             return;
         }
         else if(cin.fail()){
             cin.clear();
+            failed = true;
         } else failed = false;
-        if(failed) cout << "Not a possible competition, please try again!\n";
+        if(failed) cout << "Not a possible competition/trial, please try again!\n";
     }while(failed);
 
     BSTItrIn<Record> bstit(records);
     while(!bstit.isAtEnd()){
-        if(bstit.retrieve().getSport() == sp){
-            if(!found) cout << endl;
-            found = true;
-            bstit.retrieve().showInfo();
-            cout << endl;
+        if(bstit.retrieve().getCompetition() == c || bstit.retrieve().getTrial() == c){
+            if(bstit.retrieve().getRecord() != -1){
+                if(!found) cout << endl;
+                found = true;
+                bstit.retrieve().showInfo();
+                cout << endl;
+            }
         }
         bstit.advance();
     }
@@ -4414,10 +4419,20 @@ void Delegation::changeTokyoResult(){
         competition.setResult(result);
         competition.setMedals(medals);
 
-        vector<Competition> comps = (*s)->getCompetitions();
-        comps.erase(itC);
-        comps.push_back(competition);
-        (*s)->setCompetitions(comps);
+        for (s = sports.begin(); s != sports.end(); s++) {
+            if (!(*s)->isTeamSport()) {
+                vector<Competition> competitions = (*s)->getCompetitions();
+                for (itC = competitions.begin(); itC != competitions.end(); itC++) {
+                    if(competition == *itC){
+                        competitions.erase(itC);
+                        competitions.push_back(competition);
+                        (*s)->setCompetitions(competitions);
+                        break;
+                    }
+                }
+            }
+        }
+
     }
     else {
         cout << "(Possible Participants: ";
@@ -4770,10 +4785,19 @@ void Delegation::addTokyoResult(){
            competition.setResult(result);
            competition.setMedals(medals);
 
-           vector<Competition> comps = (*s)->getCompetitions();
-           comps.erase(itC);
-           comps.push_back(competition);
-           (*s)->setCompetitions(comps);
+           for (s = sports.begin(); s != sports.end(); s++) {
+               if (!(*s)->isTeamSport()) {
+                   vector<Competition> competitions = (*s)->getCompetitions();
+                   for (itC = competitions.begin(); itC != competitions.end(); itC++) {
+                       if(competition == *itC){
+                           competitions.erase(itC);
+                           competitions.push_back(competition);
+                           (*s)->setCompetitions(competitions);
+                           break;
+                       }
+                   }
+               }
+           }
        }
        else {
            cout << "(Possible Participants: ";
