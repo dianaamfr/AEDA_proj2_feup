@@ -107,30 +107,45 @@ void Staff::setEmployed(const bool &employed2) {
     this->employed = employed2;
 }
 
-Staff::Staff(const string &name, const Date &birth, const string &passport, const Date &arrival, const Date &departure,
-             const string &function, const bool &employed) : Person(name, birth, passport, arrival, departure), function(function), employed(employed) {}
+const float &Staff::getAvailability() const {
+    return availability;
+}
 
-Staff::Staff(const string &name) : Person(name, Date(1,1,2000), "CB111111", Date(31,7,2020) , Date(31,07,2020)), function("Nothing"), employed(false){}
+void Staff::setAvailability(const float &h) {
+    this->availability = h;
+}
+
+Staff::Staff(const string &name, const Date &birth, const string &passport, const Date &arrival, const Date &departure,
+             const string &function, const bool &employed, const float &availability) : Person(name, birth, passport, arrival, departure), function(function), employed(employed), availability(availability) {}
+
+Staff::Staff(const string &name) : Person(name, Date(1,1,2000), "CB111111", Date(31,7,2020) , Date(31,07,2020)), function("Nothing"), employed(false), availability(-1) {}
 
 Staff::Staff():Person(){}
 
 Staff::Staff(const Staff & s) : Person(s.getName(), s.getBirth(), s.getPassport(), s.getArrival(), s.getDeparture()) {
     function = s.getFunction();
     employed = s.getEmployed();
+    availability = s.getAvailability();
 }
 
 string Staff::info(){
     ostringstream os;
     os <<  left << Person::info();
-    os <<  left << setw(17) << "Function" << setw(4) << " "<< function << setw(3) <<endl;
-    os <<  left << setw(17) << "Employed" << setw(4) << " " << (employed ? "Yes" : "No") << setw(3) <<endl;
+    os <<  left << setw(17) << "Function" << setw(4) << " "<< function << setw(3) << endl;
+    os <<  left << setw(17) << "Employed" << setw(4) << " " << (employed ? "Yes" : "No") << setw(3) << endl;
+    os <<  left << setw(17) << "Availability" << setw(4) << " " << availability << setw(3) << endl;
     return os.str();
 }
 
 void Staff::showInfoPerson() const{
     Person::showInfoPerson();
-    cout << left << setw(17) << "Function" << setw(4) << " "<< function << setw(3) <<endl;
+    cout << left << setw(17) << "Function" << setw(4) << " " << function << setw(3) <<endl;
     cout << left << setw(17) << "Employed" << setw(4) << " " << (employed ? "Yes" : "No") << setw(3) <<endl;
+    cout << left << setw(17) << "Availability" << setw(4) << " " << availability << setw(3) << endl;
+}
+
+bool Staff::operator<(const Staff & s) const{
+    return getAvailability() < s.getAvailability();
 }
 
 //Participant

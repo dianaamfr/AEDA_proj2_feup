@@ -374,10 +374,12 @@ void staffMenu(Delegation & delegation) {
         cout << "3 - Change Staff member" << endl;
         cout << "4 - Show Staff member" << endl;
         cout << "5 - Show All Staff members" << endl;
+        cout << "6 - Require Service" << endl;
+        cout << "7 - End Service" << endl;
         cout << "0 - BACK" << endl;
 
         do {
-            testinput = checkinputchoice(input, 0, 5);
+            testinput = checkinputchoice(input, 0, 7);
             if (testinput != 0 && testinput != 2)
                 cerr << "Invalid option! Please try again." << endl;
         } while (testinput != 0 && testinput != 2);
@@ -430,6 +432,17 @@ void staffMenu(Delegation & delegation) {
                     delegation.showStaffMembers();
                 }
                 catch(NonExistentPerson & e){
+                    cout << e;
+                    exceptionHandler();
+                }
+                break;
+            case 6:
+                delegation.requireStaffService();
+                break;
+            case 7:
+                try {
+                    delegation.endService();
+                } catch (NonExistentStaff &e){
                     cout << e;
                     exceptionHandler();
                 }
