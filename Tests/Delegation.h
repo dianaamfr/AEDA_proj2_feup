@@ -466,28 +466,33 @@ public:
     void setRecords();
 
     /** Shows the information of all the records*/
-    void showAllRecords();
+    void showAllRecords() const;
 
     /** Show the records of Sport*/
-    void showRecordsBySport();
+    void showRecordsBySport() const;
 
     /** Show the records of Competition*/
-    void showRecordsByCompetition();
+    void showRecordsByCompetition() const;
 
     /** Show the records of Tokyo 2020 Olympic Games*/
-    void showTokyoRecords();
+    void showTokyoRecords() const;
 
     /** Show the results of Tokyo 2020 Olympic Games*/
-    void showTokyoResults();
+    void showTokyoResults() const;
 
-    /** Change or Add results of Tokyo 2020 Olympic Games*/
-    void changeOrAddTokyoResults();
+    /** Change a result of Tokyo 2020 Olympic Games*/
+    void changeTokyoResult();
+
 
     /** Require a service from a staff member*/
     void requireStaffService();
 
     /** End a service of a staff member*/
     void endService();
+
+    /** Add a result of Tokyo 2020 Olympic Games*/
+    void addTokyoResult();
+
 
 };
 
@@ -796,5 +801,20 @@ public:
     friend ostream & operator <<(ostream & os, const NoRecords & r);
     /** No Records Default Constructor*/
     explicit NoRecords();
+};
+
+/**
+ *  An exception thrown when there are no results missing
+ */
+class NoMissingResults{
+public:
+    /** Indicates that no results are missing
+    * @param os the name of the ostream
+    * @param s NoMissingResults object
+    * @returns reference to the original ostream to allow input/output chains
+    */
+    friend ostream & operator <<(ostream & os, const NoMissingResults & s);
+    /** No Missing Results Default Constructor*/
+    explicit NoMissingResults();
 };
 #endif //PROJECT_1_DELEGATION_H

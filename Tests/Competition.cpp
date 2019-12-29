@@ -137,13 +137,16 @@ void Competition::showInfo() const{
         cout << endl;
     }
     cout <<  left <<setw(17) << "Winners" << setw(4) <<endl;
-    for(const auto & medal : getMedals()){
-        if(medal.getType() == 'g')
-            cout << left << setw(2) <<left << "->" << left <<setw(15) << "Gold" << setw(4) << " "<< medal.getWinner() << setw(3) <<endl;
-        else if(medal.getType() == 's')
-            cout <<left << setw(2) << "->" << left <<setw(15) << "Silver" << setw(4) << " "<< medal.getWinner() << setw(3) <<endl;
-        else
-            cout << left << setw(2) << "->" << left <<setw(15) << "Bronze" << setw(4) << " "<< medal.getWinner() << setw(3) <<endl;
+    if(getMedals().empty()) cout << "No Winners/Medals to show - result not available\n";
+    else{
+        for(const auto & medal : getMedals()){
+            if(medal.getType() == 'g')
+                cout << left << setw(2) <<left << "->" << left <<setw(15) << "Gold" << setw(4) << " "<< medal.getWinner() << setw(3) <<endl;
+            else if(medal.getType() == 's')
+                cout <<left << setw(2) << "->" << left <<setw(15) << "Silver" << setw(4) << " "<< medal.getWinner() << setw(3) <<endl;
+            else
+                cout << left << setw(2) << "->" << left <<setw(15) << "Bronze" << setw(4) << " "<< medal.getWinner() << setw(3) <<endl;
+        }
     }
 }
 
@@ -158,8 +161,22 @@ void Competition::showMedals() const{
     }
 }
 
+void Competition::showResult() const {
+    string tmp = name;
+    transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
+    cout << tmp << endl;
+    cout <<  left <<setw(17) << "Date" << setw(4) << " "<< getEnd() << setw(3) <<endl;
+    cout <<  left <<setw(17) << "Result" <<setw(4) << " "<< getResult() << endl;
+    cout <<  left <<setw(17) << "Winner's Country" << setw(4) << " "<< getMedals()[0].getCountry() <<endl;
+    cout <<  left <<setw(17) << "Winner" << setw(4) << " "<< getMedals()[0].getWinner() <<endl;
+}
+
 ostream& operator<<(ostream& os, const Competition & c)
 {
     os << c.getName() << "\n";
     return os;
+}
+
+bool Competition::operator == (const Competition & c2) const{
+    return getName() == c2.getName();
 }

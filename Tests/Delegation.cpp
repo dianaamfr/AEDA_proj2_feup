@@ -555,24 +555,27 @@ void Delegation::readCompetitionsFile(const vector<string> &lines) {
                 case 4:
                     //ler competições - confirmar estrutura
                     participantsStream.str(line);
-                    while (getline(participantsStream, name, ',')) {
-                        if (name.find('-') != string::npos) {
-                            pCountry = name.substr(0, name.find('-'));
-                            pCountry = regex_replace(pCountry, regex("^ +| +$|( ) +"), "$1");
-                            participant = name.substr(name.find('-') + 1, name.size());
-                            participant = regex_replace(participant, regex("^ +| +$|( ) +"), "$1");
-                            medal.setWinner(participant);
-                            medal.setCountry(pCountry);
-                            if (medalCount == 0)
-                                medal.setType('g');
-                            else if (medalCount == 1)
-                                medal.setType('s');
-                            else
-                                medal.setType('b');
-                            medals.push_back(medal);
-                            medalCount++;
+                    if(line != "-1"){
+                        while (getline(participantsStream, name, ',')) {
+                            if (name.find('-') != string::npos) {
+                                pCountry = name.substr(0, name.find('-'));
+                                pCountry = regex_replace(pCountry, regex("^ +| +$|( ) +"), "$1");
+                                participant = name.substr(name.find('-') + 1, name.size());
+                                participant = regex_replace(participant, regex("^ +| +$|( ) +"), "$1");
+                                medal.setWinner(participant);
+                                medal.setCountry(pCountry);
+                                if (medalCount == 0)
+                                    medal.setType('g');
+                                else if (medalCount == 1)
+                                    medal.setType('s');
+                                else
+                                    medal.setType('b');
+                                medals.push_back(medal);
+                                medalCount++;
+                            }
                         }
-                    }
+                    }else medals.resize(0);
+
                     if(i < lines.size()-1 && !isTeamSport){//se não for a última linha, for um desporto individual e
                         i++;
                         if(!lines[i].empty() && lines[i] != "////////" && lines[i] != "//" ){ //se não for o fim do ficheiro, o inicio de um jogo,
@@ -626,7 +629,9 @@ void Delegation::readCompetitionsFile(const vector<string> &lines) {
                     participantsStream.clear();
                     break;
                 case 5:
-                    trial.setWinner(line);
+                    if(line != "-1")
+                        trial.setWinner(line);
+                    else trial.setWinner("");
 
                     if(i < lines.size()-1 && !isTeamSport){//se não for a última linha, for um desporto individual e
                         i++;
@@ -672,6 +677,17 @@ void Delegation::writeCompetitionsFile(){
                 myfile << sports.at(i)->getCompetitions().at(j).getName() << endl;
                 myfile << sports.at(i)->getCompetitions().at(j).getBegin() << endl;
                 myfile << sports.at(i)->getCompetitions().at(j).getEnd() << endl;
+
+                if(sports.at(i)->getCompetitions().at(j).getMedals().empty()){
+                    myfile << "-1";
+                    if (i != sports.size() -1)  // se não for o ultimo deporto adicona nova linha depois das medalhas da competicao
+                        myfile << "\n";
+                    if (i == sports.size() -1)  // se for o ultimo desporto
+                    {
+                        if(j != sports.at(i)->getCompetitions().size() - 1)
+                            myfile << "\n";
+                    }
+                }
                 for (int k = 0; k < sports.at(i)->getCompetitions().at(j).getMedals().size(); ++k) {
                     myfile << sports.at(i)->getCompetitions().at(j).getMedals().at(k).getCountry() << "-"
                            << sports.at(i)->getCompetitions().at(j).getMedals().at(k).getWinner();
@@ -720,7 +736,9 @@ void Delegation::writeCompetitionsFile(){
 
                         }
                         if(sports.at(i)->getCompetitions().at(j).getTrials().at(k).getParticipants().empty()) myfile << endl;
-                        myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getWinner();
+                        if(sports.at(i)->getCompetitions().at(j).getTrials().at(k).getWinner() == "")
+                            myfile << "-1";
+                        else myfile << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getWinner();
                         if(sports.at(i)->getCompetitions().at(j).getTrials().at(k).getResult() != -2.0){//tem result
                             myfile << endl  << sports.at(i)->getCompetitions().at(j).getTrials().at(k).getResult();
                         }
@@ -4047,9 +4065,11 @@ void Delegation::mostAwardedAthletes() const{
 
 //Records (BST) functions
 bool newRecord(float result,float record,char comparisonCriteria){
-    if(record == -1) return true;
+    if(result == -1) return false; //se o jogo ainda não tem resultado
 
-    if(comparisonCriteria == '+'){
+    if(record == -1) return true; //se ainda não existe recorde para uma certa competição/jogo e há dados do resultado nos jogos de tóquio
+
+    if(comparisonCriteria == '+'){ //se existem dados do recorde mundial e dos jogos de Tóquio
         return (result > record);
     }
     return result < record;
@@ -4114,7 +4134,7 @@ void Delegation::setRecords(){
     }
 }
 
-void Delegation::showAllRecords(){
+void Delegation::showAllRecords() const{
 
     int test = 0;
     string input = "";
@@ -4127,8 +4147,10 @@ void Delegation::showAllRecords(){
 
     BSTItrIn<Record> bstit(records);
     while(!bstit.isAtEnd()){
-        bstit.retrieve().showInfo();
-        cout << endl;
+        if(bstit.retrieve().getRecord() != -1){
+            bstit.retrieve().showInfo();
+            cout << endl;
+        }
         bstit.advance();
     }
     if(records.isEmpty()) throw NoRecords();
@@ -4141,19 +4163,908 @@ void Delegation::showAllRecords(){
     } while (test != 0 && test != 2);
 }
 
-void Delegation::showRecordsBySport(){
+void Delegation::showRecordsBySport() const{
+
+    int test = 0;
+    string input = "";
+
+    system("cls");
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << setw(18) << " "<< "All-Time Olympic Records by Sport" <<"" << endl;
+    cout << "----------------------------------------------------------------------"  << endl << endl;
+
+    bool found = false,failed=true;
+    string sp;
+
+    do{
+        cout << "Choose a sport: ";
+        getline(cin,sp);
+        if (cin.eof()){
+            cin.clear();
+            return;
+        }
+        else if(cin.fail()){
+            cin.clear();
+        }
+        else if(checkStringInput(sp) == 0)
+            failed =false;
+        if(failed) cout << "Not a sport, please try again!\n";
+    }while(failed);
+
+    BSTItrIn<Record> bstit(records);
+    while(!bstit.isAtEnd()){
+        if(bstit.retrieve().getSport() == sp){
+            if(!found) cout << endl;
+            found = true;
+            bstit.retrieve().showInfo();
+            cout << endl;
+        }
+        bstit.advance();
+    }
+    if(records.isEmpty()||!found) throw NoRecords();
+
+    cout << endl << "0 - BACK" << endl;
+    do {
+        test = checkinputchoice(input, 0, 0);
+        if (test != 0&& test != 2)
+            cerr << "Invalid option! Press 0 to go back." << endl;
+    } while (test != 0 && test != 2);
 }
 
-void Delegation::showRecordsByCompetition(){
+void Delegation::showRecordsByCompetition() const{
+    int test = 0;
+    string input = "";
+
+    system("cls");
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << setw(15) << " "<< "All-Time Olympic Records by Competition" <<"" << endl;
+    cout << "----------------------------------------------------------------------"  << endl << endl;
+
+    bool found = false,failed;
+    string c;
+
+    do{
+        cout << "Choose a competition/trial: ";
+        getline(cin,c);
+        if (cin.eof()){
+            cin.clear();
+            return;
+        }
+        else if(cin.fail()){
+            cin.clear();
+            failed = true;
+        } else failed = false;
+        if(failed) cout << "Not a possible competition/trial, please try again!\n";
+    }while(failed);
+
+    BSTItrIn<Record> bstit(records);
+    while(!bstit.isAtEnd()){
+        if(bstit.retrieve().getCompetition() == c || bstit.retrieve().getTrial() == c){
+            if(bstit.retrieve().getRecord() != -1){
+                if(!found) cout << endl;
+                found = true;
+                bstit.retrieve().showInfo();
+                cout << endl;
+            }
+        }
+        bstit.advance();
+    }
+    if(records.isEmpty()||!found) throw NoRecords();
+
+    cout << endl << "0 - BACK" << endl;
+    do {
+        test = checkinputchoice(input, 0, 0);
+        if (test != 0&& test != 2)
+            cerr << "Invalid option! Press 0 to go back." << endl;
+    } while (test != 0 && test != 2);
 }
 
-void Delegation::showTokyoRecords(){
+void Delegation::showTokyoRecords() const{
+    int test = 0;
+    string input = "";
+
+    system("cls");
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << setw(22) << " "<< "Tokyo 2020 Olympic Records" <<"" << endl;
+    cout << "----------------------------------------------------------------------"  << endl << endl;
+
+    bool found = false;
+
+    BSTItrIn<Record> bstit(records);
+    while(!bstit.isAtEnd()){
+        if(bstit.retrieve().getPlace() == "Tokyo" && bstit.retrieve().getDate().getYear() == 2020){
+            found = true;
+            bstit.retrieve().showInfo();
+            cout << endl;
+        }
+        bstit.advance();
+    }
+    if(records.isEmpty() || !found) throw NoRecords();
+
+    cout << endl << "0 - BACK" << endl;
+    do {
+        test = checkinputchoice(input, 0, 0);
+        if (test != 0&& test != 2)
+            cerr << "Invalid option! Press 0 to go back." << endl;
+    } while (test != 0 && test != 2);
 }
 
-void Delegation::showTokyoResults(){
+void Delegation::showTokyoResults() const {
+    vector<Sport *>::const_iterator s;
+    Record notFound;
+    string sport;
+
+    int test = 0;
+    string input = "";
+
+    system("cls");
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << setw(22) << " "<< "Tokyo 2020 Olympic Results" <<"" << endl;
+    cout << "----------------------------------------------------------------------"  << endl << endl;
+
+    for (s = sports.begin(); s != sports.end(); s++) {//para cada desporto
+        if (!(*s)->isTeamSport()) { //se    for individual vai ter resultados;
+            sport = (*s)->getName();
+            transform(sport.begin(), sport.end(), sport.begin(), ::toupper);
+            for (int j = 0; j < sport.size() * 3; j++)cout << "-";
+            cout << endl;
+            for (int j = 0; j < sport.size(); j++)cout << " ";
+            cout << sport << endl;
+            for (int j = 0; j < sport.size() * 3; j++)cout << "-";
+            cout << endl;
+            vector<Competition> competitions = (*s)->getCompetitions();
+            vector<Competition>::iterator c;
+            for (c = competitions.begin(); c != competitions.end(); c++) { //ou nas competições
+                if (c->getResult() != -2 && c->getResult() != -1) { //os resultados estão nas competições
+                    c->showResult();
+                    cout << endl;
+                } else {//os resultados estão nos jogos
+                    vector<Trial> trials = c->getTrials();
+                    vector<Trial>::iterator t;
+                    for (t = trials.begin(); t != trials.end(); t++) {//ou nos jogos
+                        if(t->getResult() != -1){
+                            t->showResult();
+                            cout << endl;
+                        }
+                    }
+                }
+            }
+        }//se for desporto de equipa não temos resultados
+    }
+
+    cout << endl << "0 - BACK" << endl;
+    do {
+        test = checkinputchoice(input, 0, 0);
+        if (test != 0&& test != 2)
+            cerr << "Invalid option! Press 0 to go back." << endl;
+    } while (test != 0 && test != 2);
 }
 
-void Delegation::changeOrAddTokyoResults(){
+void Delegation::changeTokyoResult(){
+    vector<Sport *>::const_iterator s;
+    Record notFound;
+    string sport, compTrial;
+
+    int test = 0;
+    string input = "";
+
+    system("cls");
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << setw(16) << " "<< "Change the Result of a Competition/Game" <<"" << endl;
+    cout << "----------------------------------------------------------------------"  << endl << endl;
+
+    bool firstSportComp;
+    vector<string> changeResults;
+
+    cout << "Competitions and Trials you can change:\n";
+    //show the competitions/games without result
+    for (s = sports.begin(); s != sports.end(); s++) {//para cada desporto
+        if (!(*s)->isTeamSport()) { //se for individual vai ter resultados;
+            sport = (*s)->getName();
+            transform(sport.begin(), sport.end(), sport.begin(), ::toupper);
+            vector<Competition> competitions = (*s)->getCompetitions();
+            vector<Competition>::iterator c;
+            firstSportComp = true;
+            for (c = competitions.begin(); c != competitions.end(); c++) { //ou nas competições
+                if (c->getResult() != -2 && c->getResult() != -1) {
+                    if(firstSportComp){
+                        cout << sport << endl;
+                        firstSportComp = false;
+                    }
+                    cout << "->" << c->getName() << endl;
+                    changeResults.push_back(c->getName());
+                } else {//os resultados estão nos jogos
+                    vector<Trial> trials = c->getTrials();
+                    vector<Trial>::iterator t;
+                    for (t = trials.begin(); t != trials.end(); t++) {//ou nos jogos
+                        if (t->getResult() != -1) {
+                            if(firstSportComp){
+                                cout << sport << endl;
+                                firstSportComp = false;
+                            }
+                            cout << "->" <<  t->getName() << endl;
+                            changeResults.push_back(t->getName());
+                        }
+                    }
+                    cout << endl;
+                }
+            }
+            cout << endl;
+        }//se for desporto de equipa não temos resultados
+    }
+
+    //Chose competition/trial to add result to
+    bool failed;
+    do{
+        cout << "Choose a competition/trial: ";
+        getline(cin,compTrial);
+        if (cin.eof()){
+            cin.clear();
+            return;
+        }
+        else if(cin.fail()){
+            cin.clear();
+            failed = true;
+        }
+        else if(find(changeResults.begin(),changeResults.end(),compTrial) == changeResults.end()) failed = true;
+        else failed = false;
+        if(failed) cout << "Not a valid trial/competition, please try again!\n";
+    }while(failed);
+
+    system("cls");
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << setw(16) << " "<< "Change the Result of a Competition/Game" <<"" << endl;
+    cout << "----------------------------------------------------------------------"  << endl << endl;
+
+    //print competition/trial name
+    string tmp = compTrial;
+    transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
+    for (int j = 0; j < tmp.size() * 3; j++)cout << "-";
+    cout << endl;
+    for (int j = 0; j < tmp.size(); j++)cout << " ";
+    cout << tmp << endl;
+    for (int j = 0; j < tmp.size() * 3; j++)cout << "-";
+    cout << endl;
+
+    //check if it is a competition or if it is trial and get possible participants
+    bool isComp = true;
+    Competition competition;
+    Trial trial;
+    competition.setName(compTrial);
+    trial.setName(compTrial);
+    vector<string> participants;
+    vector<Competition>::iterator itC;
+    vector<Trial>::iterator itT;
+
+    for(s = sports.begin(); s != sports.end(); s++){
+        if(!(*s)->isTeamSport()){
+            vector<Competition> competitions = (*s)->getCompetitions();
+            competition.setName(compTrial);
+            itC = find(competitions.begin(),competitions.end(),competition);
+            if(!(itC == competitions.end())){
+                participants = itC->getParticipants();
+                competition = *itC;
+                isComp = true;
+                break;
+            }
+            else{
+                isComp = false;
+                for(itC =competitions.begin(); itC != competitions.end(); itC++){
+                    competition = *itC;
+                    vector<Trial> trials = itC->getTrials();
+                    itT = find(trials.begin(),trials.end(),trial);
+                    if(!(itT == trials.end())){
+                        trial = *itT;
+                        participants = itT->getParticipants();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    //Ask for result and for medals(if a competition) or winner(if a trial)
+
+    //Ask for the new result to set
+    float result;
+    failed = false;
+    do{
+        cout << "Result: ";
+        getline(cin,tmp);
+        if (cin.eof()){
+            cin.clear();
+            return;
+        }
+        if (checkFloatInput(tmp) != 0)
+            failed = true;
+        else{
+            if (stof(tmp) < 0)
+                failed = true;
+            else failed = false;
+        }
+        if(failed) cout << "Not a valid result, please try again.\n";
+    }while(failed);
+
+    result = stof(tmp);
+
+    string participant="",country="";
+
+    vector<string>::iterator participantToErase;
+    if(isComp){
+        cout << "(Possible Portuguese Participants: ";
+        for(unsigned int i = 0; i< participants.size(); i++){
+            cout << participants[i];
+            if(i < participants.size()-1) cout << ", ";
+        }
+        cout << ")\n";
+
+        vector<Medal> medals;
+        Medal m;
+
+        cout << "\nGold medal winner: \n";
+        do{
+            cout << "->Winner's country: ";
+            getline(cin,country);
+            if (cin.eof()){
+                cin.clear();
+                return;
+            }
+            if (checkStringInput(country) != 0)
+                cout << "Not a valid  country, please try again.\n";
+            else failed = false;
+        }while(checkStringInput(country) != 0);
+
+        failed = false;
+        do{
+            cout << "->Winner's name: ";
+            getline(cin,participant);
+            if (cin.eof()){
+                cin.clear();
+                return;
+            }
+            if (checkStringInput(participant) != 0)
+                failed = true;
+            else if(country == "Portugal"){
+                participantToErase = find(participants.begin(), participants.end(),participant);
+                if (participantToErase == participants.end())
+                    failed = true;
+                else failed = false;
+            }
+            else failed = false;
+            if(failed) cout << "Not a valid  participant, please try again.\n";
+        }while(failed);
+        if(country == "Portugal")
+            participants.erase(participantToErase);
+
+        m.setWinner(participant);
+        m.setCountry(country);
+        m.setType('g');
+
+        medals.push_back(m);
+
+        failed = false;
+        cout << "\nSilver medal winner: \n";
+        do{
+            cout << "->Winner's country: ";
+            getline(cin,country);
+            if (cin.eof()){
+                cin.clear();
+                return;
+            }
+            if (checkStringInput(country) != 0)
+                failed = true;
+            else if(country == "Portugal" && participants.empty())
+                failed = true;
+            else failed = false;
+            if(failed) cout << "Not a valid  country, please try again.\n";
+        }while(failed);
+
+        failed = false;
+        do{
+            cout << "->Winner's name: ";
+            getline(cin,participant);
+            if (cin.eof()){
+                cin.clear();
+                return;
+            }
+            if (checkStringInput(participant) != 0)
+                failed = true;
+            else if(country == "Portugal"){
+                participantToErase = find(participants.begin(), participants.end(),participant);
+                if (participantToErase == participants.end())
+                    failed = true;
+                else failed = false;
+            }
+            if(failed) cout << "Not a valid  participant, please try again.\n";
+        }while(failed);
+        if(country == "Portugal") participants.erase(participantToErase);
+
+        m.setWinner(participant);
+        m.setCountry(country);
+        m.setType('s');
+
+        medals.push_back(m);
+
+        cout << "\nBronze medal winner: \n";
+        failed = false;
+        do{
+            cout << "->Winner's country: ";
+            getline(cin,country);
+            if (cin.eof()){
+                cin.clear();
+                return;
+            }
+            if (checkStringInput(country) != 0)
+                failed = true;
+            else if(country == "Portugal" && participants.empty())
+                failed = true;
+            else failed = false;
+            if(failed) cout << "Not a valid  country, please try again.\n";
+        }while(failed);
+
+        failed = false;
+        do{
+            cout << "->Winner's name: ";
+            getline(cin,participant);
+            if (cin.eof()){
+                cin.clear();
+                return;
+            }
+            if (checkStringInput(participant) != 0)
+                failed = true;
+            else if(country == "Portugal"){
+                participantToErase = find(participants.begin(), participants.end(),participant);
+                if (participantToErase == participants.end())
+                    failed = true;
+                else failed = false;
+            }
+            if(failed) cout << "Not a valid  participant, please try again.\n";
+        }while(failed);
+        if(country == "Portugal") participants.erase(participantToErase);
+
+        m.setWinner(participant);
+        m.setCountry(country);
+        m.setType('b');
+
+        medals.push_back(m);
+
+        competition.setResult(result);
+        competition.setMedals(medals);
+
+        for (s = sports.begin(); s != sports.end(); s++) {
+            if (!(*s)->isTeamSport()) {
+                vector<Competition> competitions = (*s)->getCompetitions();
+                for (itC = competitions.begin(); itC != competitions.end(); itC++) {
+                    if(competition == *itC){
+                        competitions.erase(itC);
+                        competitions.push_back(competition);
+                        (*s)->setCompetitions(competitions);
+                        break;
+                    }
+                }
+            }
+        }
+
+    }
+    else {
+        cout << "(Possible Participants: ";
+        for (unsigned int i = 0; i < participants.size(); i++) {
+            cout << participants[i];
+            if (i < participants.size() - 1) cout << ", ";
+        }
+        cout << ")\n";
+
+        do {
+            cout << "Winner: ";
+            getline(cin, participant);
+            if (cin.eof()) {
+                cin.clear();
+                return;
+            }
+            participantToErase = find(participants.begin(), participants.end(), participant);
+            if (checkStringInput(participant) != 0 || participantToErase == participants.end())
+                cout << "Not a valid  participant, please try again.\n";
+        } while (checkStringInput(participant) != 0 || participantToErase == participants.end());
+
+        trial.setResult(result);
+        trial.setWinner(participant);
+
+        for (s = sports.begin(); s != sports.end(); s++) {
+            if (!(*s)->isTeamSport()) {
+                vector<Competition> competitions = (*s)->getCompetitions();
+                for (itC = competitions.begin(); itC != competitions.end(); itC++) {
+                    competition = *itC;
+                    vector<Trial> trials = itC->getTrials();
+                    itT = find(trials.begin(), trials.end(), trial);
+                    if (!(itT == trials.end())) {
+                        trials.erase(itT);
+                        trials.push_back(trial);
+
+                        competitions.erase(itC);
+                        competition.setTrials(trials);
+                        competitions.push_back(competition);
+
+                        (*s)->setCompetitions(competitions);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    setRecords();
+
+    cout << endl << "0 - BACK" << endl;
+    do {
+        test = checkinputchoice(input, 0, 0);
+        if (test != 0&& test != 2)
+            cerr << "Invalid option! Press 0 to go back." << endl;
+    } while (test != 0 && test != 2);
+}
+
+void Delegation::addTokyoResult(){
+    vector<Sport *>::const_iterator s;
+    Record notFound;
+    string sport, compTrial;
+
+    int test = 0;
+    string input = "";
+
+    system("cls");
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << setw(17) << " "<< "Add the Result of a Competition/Game" <<"" << endl;
+    cout << "----------------------------------------------------------------------"  << endl << endl;
+
+    bool firstSportComp = true;
+    vector<string> noResults;
+
+    cout << "Competitions and Trials without result:\n";
+    //show the competitions/games without result
+    for (s = sports.begin(); s != sports.end(); s++) {//para cada desporto
+        if (!(*s)->isTeamSport()) { //se    for individual vai ter resultados;
+            sport = (*s)->getName();
+            transform(sport.begin(), sport.end(), sport.begin(), ::toupper);
+            vector<Competition> competitions = (*s)->getCompetitions();
+            vector<Competition>::iterator c;
+            firstSportComp = true;
+            for (c = competitions.begin(); c != competitions.end(); c++) { //ou nas competições
+                if (c->getResult() == -1) { //os resultados estão nas competições
+                    if(firstSportComp){
+                        cout << sport << endl;
+                        firstSportComp = false;
+                    }
+                    cout << "->" << c->getName() << endl;
+                    noResults.push_back(c->getName());
+                    cout << endl;
+                } else {//os resultados estão nos jogos
+                    vector<Trial> trials = c->getTrials();
+                    vector<Trial>::iterator t;
+                    for (t = trials.begin(); t != trials.end(); t++) {//ou nos jogos
+                        if (t->getResult() == -1) {
+                            if(firstSportComp){
+                                cout << sport << endl;
+                                firstSportComp = false;
+                            }
+                            cout << "->" <<  t->getName() << endl;
+                            noResults.push_back(t->getName());
+                            cout << endl;
+                        }
+                    }
+                }
+            }
+        }//se for desporto de equipa não temos resultados
+    }
+
+    if(noResults.empty()) throw NoMissingResults();
+
+    //Chose competition/trial to add result to
+    bool failed;
+    do{
+        cout << "Choose a competition/trial: ";
+        getline(cin,compTrial);
+        if (cin.eof()){
+            cin.clear();
+            return;
+        }
+        else if(cin.fail()){
+            cin.clear();
+            failed = true;
+        } else failed = false;
+
+        if(find(noResults.begin(),noResults.end(),compTrial) == noResults.end()) failed = true;
+        else failed = false;
+
+        if(failed) cout << "Not a valid trial/competition, please try again!\n";
+    }while(failed);
+
+    system("cls");
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << setw(17) << " "<< "Add the Result of a Competition/Game" <<"" << endl;
+    cout << "----------------------------------------------------------------------"  << endl << endl;
+
+    //print competition/trial name
+    string tmp = compTrial;
+    transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
+    for (int j = 0; j < tmp.size() * 3; j++)cout << "-";
+    cout << endl;
+    for (int j = 0; j < tmp.size(); j++)cout << " ";
+    cout << tmp << endl;
+    for (int j = 0; j < tmp.size() * 3; j++)cout << "-";
+    cout << endl;
+
+    //check if it is a competition or if it is trial and get possible participants
+    bool isComp = true;
+    Competition competition;
+    Trial trial;
+    competition.setName(compTrial);
+    trial.setName(compTrial);
+    vector<string> participants;
+    vector<Competition>::iterator itC;
+    vector<Trial>::iterator itT;
+
+    for(s = sports.begin(); s != sports.end(); s++){
+        if(!(*s)->isTeamSport()){
+            vector<Competition> competitions = (*s)->getCompetitions();
+            competition.setName(compTrial);
+            itC = find(competitions.begin(),competitions.end(),competition);
+            if(!(itC == competitions.end())){
+                participants = itC->getParticipants();
+                competition = *itC;
+                isComp = true;
+                break;
+            }
+            else{
+                isComp = false;
+                for(itC =competitions.begin(); itC != competitions.end(); itC++){
+                    competition = *itC;
+                    vector<Trial> trials = itC->getTrials();
+                    itT = find(trials.begin(),trials.end(),trial);
+                    if(!(itT == trials.end())){
+                        trial = *itT;
+                        participants = itT->getParticipants();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+       //Ask for result and for medals(if a competition) or winner(if a trial)
+
+       //Ask for the new result to set
+       float result;
+       failed = false;
+       do{
+           cout << "Result: ";
+           getline(cin,tmp);
+           if (cin.eof()){
+               cin.clear();
+               return;
+           }
+           if (checkFloatInput(tmp) != 0)
+               failed = true;
+           else{
+               if (stof(tmp) < 0)
+                   failed = true;
+               else failed = false;
+           }
+           if(failed) cout << "Not a valid result, please try again.\n";
+       }while(failed);
+
+       result = stof(tmp);
+
+       string participant="",country="";
+
+       vector<string>::iterator participantToErase;
+       if(isComp){
+           cout << "(Possible Portuguese Participants: ";
+           for(unsigned int i = 0; i< participants.size(); i++){
+               cout << participants[i];
+               if(i < participants.size()-1) cout << ", ";
+           }
+           cout << ")\n";
+
+           vector<Medal> medals;
+           Medal m;
+
+           cout << "\nGold medal winner: \n";
+           do{
+               cout << "->Winner's country: ";
+               getline(cin,country);
+               if (cin.eof()){
+                   cin.clear();
+                   return;
+               }
+               if (checkStringInput(country) != 0)
+                   cout << "Not a valid  country, please try again.\n";
+               else failed = false;
+           }while(checkStringInput(country) != 0);
+
+           failed = false;
+           do{
+               cout << "->Winner's name: ";
+               getline(cin,participant);
+               if (cin.eof()){
+                   cin.clear();
+                   return;
+               }
+               if (checkStringInput(participant) != 0)
+                   failed = true;
+               else if(country == "Portugal"){
+                   participantToErase = find(participants.begin(), participants.end(),participant);
+                   if (participantToErase == participants.end())
+                       failed = true;
+                   else failed = false;
+               }
+               else failed = false;
+               if(failed) cout << "Not a valid  participant, please try again.\n";
+           }while(failed);
+           if(country == "Portugal")
+               participants.erase(participantToErase);
+
+           m.setWinner(participant);
+           m.setCountry(country);
+           m.setType('g');
+
+           medals.push_back(m);
+
+           failed = false;
+           cout << "\nSilver medal winner: \n";
+           do{
+               cout << "->Winner's country: ";
+               getline(cin,country);
+               if (cin.eof()){
+                   cin.clear();
+                   return;
+               }
+               if (checkStringInput(country) != 0)
+                   failed = true;
+               else if(country == "Portugal" && participants.empty())
+                   failed = true;
+               else failed = false;
+               if(failed) cout << "Not a valid  country, please try again.\n";
+           }while(failed);
+
+           failed = false;
+           do{
+               cout << "->Winner's name: ";
+               getline(cin,participant);
+               if (cin.eof()){
+                   cin.clear();
+                   return;
+               }
+               if (checkStringInput(participant) != 0)
+                   failed = true;
+               else if(country == "Portugal"){
+                   participantToErase = find(participants.begin(), participants.end(),participant);
+                   if (participantToErase == participants.end())
+                       failed = true;
+                   else failed = false;
+               }
+               if(failed) cout << "Not a valid  participant, please try again.\n";
+           }while(failed);
+           if(country == "Portugal") participants.erase(participantToErase);
+
+           m.setWinner(participant);
+           m.setCountry(country);
+           m.setType('s');
+
+           medals.push_back(m);
+
+           cout << "\nBronze medal winner: \n";
+           failed = false;
+           do{
+               cout << "->Winner's country: ";
+               getline(cin,country);
+               if (cin.eof()){
+                   cin.clear();
+                   return;
+               }
+               if (checkStringInput(country) != 0)
+                   failed = true;
+               else if(country == "Portugal" && participants.empty())
+                   failed = true;
+               else failed = false;
+               if(failed) cout << "Not a valid  country, please try again.\n";
+           }while(failed);
+
+           failed = false;
+           do{
+               cout << "->Winner's name: ";
+               getline(cin,participant);
+               if (cin.eof()){
+                   cin.clear();
+                   return;
+               }
+               if (checkStringInput(participant) != 0)
+                   failed = true;
+               else if(country == "Portugal"){
+                   participantToErase = find(participants.begin(), participants.end(),participant);
+                   if (participantToErase == participants.end())
+                       failed = true;
+                   else failed = false;
+               }
+               if(failed) cout << "Not a valid  participant, please try again.\n";
+           }while(failed);
+           if(country == "Portugal") participants.erase(participantToErase);
+
+           m.setWinner(participant);
+           m.setCountry(country);
+           m.setType('b');
+
+           medals.push_back(m);
+
+           competition.setResult(result);
+           competition.setMedals(medals);
+
+           for (s = sports.begin(); s != sports.end(); s++) {
+               if (!(*s)->isTeamSport()) {
+                   vector<Competition> competitions = (*s)->getCompetitions();
+                   for (itC = competitions.begin(); itC != competitions.end(); itC++) {
+                       if(competition == *itC){
+                           competitions.erase(itC);
+                           competitions.push_back(competition);
+                           (*s)->setCompetitions(competitions);
+                           break;
+                       }
+                   }
+               }
+           }
+       }
+       else {
+           cout << "(Possible Participants: ";
+           for (unsigned int i = 0; i < participants.size(); i++) {
+               cout << participants[i];
+               if (i < participants.size() - 1) cout << ", ";
+           }
+           cout << ")\n";
+
+           do {
+               cout << "Winner: ";
+               getline(cin, participant);
+               if (cin.eof()) {
+                   cin.clear();
+                   return;
+               }
+               participantToErase = find(participants.begin(), participants.end(), participant);
+               if (checkStringInput(participant) != 0 || participantToErase == participants.end())
+                   cout << "Not a valid  participant, please try again.\n";
+           } while (checkStringInput(participant) != 0 || participantToErase == participants.end());
+
+           trial.setResult(result);
+           trial.setWinner(participant);
+
+           for (s = sports.begin(); s != sports.end(); s++) {
+               if (!(*s)->isTeamSport()) {
+                   vector<Competition> competitions = (*s)->getCompetitions();
+                   for (itC = competitions.begin(); itC != competitions.end(); itC++) {
+                       competition = *itC;
+                       vector<Trial> trials = itC->getTrials();
+                       itT = find(trials.begin(), trials.end(), trial);
+                       if (itT != trials.end()) {
+                           trials.erase(itT);
+                           trials.push_back(trial);
+
+                           competitions.erase(itC);
+                           competition.setTrials(trials);
+                           competitions.push_back(competition);
+
+                           (*s)->setCompetitions(competitions);
+                           break;
+                       }
+                   }
+               }
+           }
+       }
+
+       setRecords();
+
+       cout << endl << "0 - BACK" << endl;
+       do {
+           test = checkinputchoice(input, 0, 0);
+           if (test != 0&& test != 2)
+               cerr << "Invalid option! Press 0 to go back." << endl;
+       } while (test != 0 && test != 2);
 }
 
 
@@ -4318,6 +5229,13 @@ ostream &operator<<(ostream &os, FullTeam &t) {
 NoRecords::NoRecords(){}
 
 ostream & operator <<(ostream & os, const NoRecords & r) {
-    os << " No records to show!\n";
+    os << "No records to show!\n";
+    return os;
+}
+
+NoMissingResults::NoMissingResults(){}
+
+ostream & operator <<(ostream & os, const NoMissingResults & r) {
+    os << "No results missing!\n";
     return os;
 }
