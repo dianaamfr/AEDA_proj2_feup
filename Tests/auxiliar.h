@@ -181,6 +181,11 @@ bool compareChar(const char & c1, const char & c2);
  */
 bool caseInSensStringCompare(const string & str1, const string &str2);
 
-bool to_bool(string const& st);
+/**
+ * Transforms a "0" or "1" string into a bool value
+ * @param st string to process
+ * @return true if string == "1" , false if == "0"
+ */
+inline bool to_bool(string const& st);
 
 #endif //PROJECT_1_INPUTCHECK_H
