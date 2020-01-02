@@ -332,6 +332,7 @@ public:
 class Staff: public Person{
     string function;/**< The function of the Staff member*/
     bool employed; /**< True if the staff member is currently hired*/
+    float availability; /** Hours until free for next service, -1 if employed = false*/
 public:
     /**Staff default constructor*/
     Staff();
@@ -345,7 +346,7 @@ public:
      * @param function the function of the member of the Staff
      */
     Staff(const string &name, const Date &birth, const string &passport, const Date &arrival, const Date &departure,
-          const string &function, const bool &employed);
+          const string &function, const bool &employed, const float &availability);
 
     /** Staff constructor with only name to use with find()
      * @param name the name of the staff member
@@ -373,9 +374,17 @@ public:
     const bool &getEmployed() const;
 
     /** Set the employed bool of the staff member
-    * @param employed the bool value of the employment of the staff member
+    * @param employed2 the bool value of the employment of the staff member
     */
     void setEmployed(const bool &employed2);
+
+    /** @returns hours until ready for next service; -1 if employed = false */
+    const float &getAvailability() const;
+
+    /** Set the number of hours until ready for next service; -1 if employed = false
+     * @param h the amount of hours
+     */
+     void setAvailability(const float &h);
 
     /**Show the information about the Staff member in a user friendly way*/
     string info();
@@ -388,7 +397,11 @@ public:
     /**Show the information about the Staff in a user friendly way*/
     void showInfoPerson() const;
 
-    //virtual double getDailyCost()=0;
+    /** Compares two staff members
+    * @param s The Staff member to compare with
+    * @returns true if the first has lower availability than the second
+    */
+    bool operator<(const Staff & s) const;
 };
 
 #endif //PROJECT_1_PERSON_H

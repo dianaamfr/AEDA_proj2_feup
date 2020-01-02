@@ -205,6 +205,7 @@ CB469475
 04/08/2020
 Manager
 1
+4.5
 
 Carlos Paiva
 09/09/1993
@@ -213,6 +214,7 @@ CB009404
 07/08/2020
 Cleaning
 1
+4.5
 
 Catarina Freitas
 27/08/1996
@@ -221,6 +223,16 @@ CB643432
 05/08/2020
 Cleaning
 0
+-1
+
+Helena Lima
+26/07/1968
+BGT1392482
+27/07/2020
+03/08/2020
+Masseuse
+0
+-1
 
 Julio Pinto da Silva
 10/03/1980
@@ -229,3 +241,13 @@ CB007804
 07/08/2020
 Cook
 1
+0
+
+Roberto Dias Garcia
+03/05/1987
+CB3458274
+27/07/2020
+03/08/2020
+Masseuse
+1
+1.75

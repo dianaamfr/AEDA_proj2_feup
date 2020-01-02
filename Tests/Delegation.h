@@ -30,6 +30,13 @@ typedef unordered_set<Staff*,staffHash, staffHash> staffHtab;
 typedef unordered_set<Staff*,staffHash, staffHash>::iterator staffHtabit;
 typedef std::unordered_set<Staff*, staffHash, staffHash>::const_iterator staffHtabcit;
 
+class Compare {
+public:
+    bool operator()(Staff *&a, Staff *&b) {
+        return a->getAvailability() > b->getAvailability();
+    }
+};
+
 /**
  * A class to store the general information about a Delegation that takes part in the 2020 Tokyo Olympic Games
  */
@@ -49,6 +56,7 @@ class Delegation {
     vector<Sport*> sports;/**< All the sports of the Delegation*/
     BST<Record> records; /**<World Records in the competitions the delegation takes part in*/
     staffHtab staff; /**< HashTable for staff pointers - Staff is also stored in people*/
+    priority_queue<Staff*, vector<Staff*>, Compare> staffService; /**< Prioritie Queue for service requirements*/
 public:
 
     friend bool newRecord(float result,float record,char comparisonCriteria);
@@ -475,8 +483,16 @@ public:
     /** Change a result of Tokyo 2020 Olympic Games*/
     void changeTokyoResult();
 
+
+    /** Require a service from a staff member*/
+    void requireStaffService();
+
+    /** End a service of a staff member*/
+    void endService();
+
     /** Add a result of Tokyo 2020 Olympic Games*/
     void addTokyoResult();
+
 
 };
 

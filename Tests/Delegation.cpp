@@ -229,7 +229,7 @@ void Delegation::readPeopleFile(const vector<string> &lines) {
         }
 
         if (numline == 1) { // se for a primeira linha de uma pessoa vamos ver se é funcionário ou atleta
-            readFunc = lines[i + 7].empty();
+            readFunc = lines[i + 8].empty();
             competitions.resize(0);
             a = new Athlete();
             s = new Staff();
@@ -237,7 +237,7 @@ void Delegation::readPeopleFile(const vector<string> &lines) {
         }
 
         //ler atleta ou funcionario
-        if (!readFunc) { // se tiver mais de 6 linha estamos perante um atleta
+        if (!readFunc) { // se tiver mais de 8 linha estamos perante um atleta
             //ler atleta
             switch (numline) {
                 case 1:
@@ -368,11 +368,16 @@ void Delegation::readPeopleFile(const vector<string> &lines) {
                         throw FileStructureError(peopleFilename);
                     }
                     s->setEmployed(to_bool(line));
+                    break;
+                case 8:
+                    if (checkFloatInput(line) != 0){
+                        throw FileStructureError(peopleFilename);
+                    }
+                    s->setAvailability(stof(line));
                     temp = new Staff(*s);
                     people.push_back(temp);
-                    testinsert = staff.insert(temp);
-                    //cout << (testinsert.second ? "Added" : "NotAdded" ) << endl;
-                    // necessário tirar o clean screen do main menu para verificar resultados
+                    staff.insert(temp);
+                    if(temp->getEmployed()) staffService.push(temp);
                     break;
                 default:
                     throw FileStructureError(peopleFilename);
@@ -400,7 +405,8 @@ void Delegation::writePeopleFile(){
             else{
                 Staff* a = dynamic_cast<Staff *> (people.at(i));
                 myfile << a->getFunction() << endl;
-                myfile << a->getEmployed();
+                myfile << a->getEmployed() << endl;
+                myfile << a->getAvailability();
             }
             if (i != people.size()-1)
                 myfile << endl << endl;
@@ -1239,6 +1245,7 @@ staffHtabcit Delegation::FindPersonHash(const string & name) const {
     a = staff.find(temp);
     return a;
 }
+
 //Staff Functions
 void Delegation::addStaffMember() {
     Staff* novo = new Staff();
@@ -1386,10 +1393,32 @@ void Delegation::addStaffMember() {
     }
     novo->setEmployed(to_bool(tmp));
 
+    if(novo->getEmployed()) {
+        cout << "Availability: ";
+        getline(cin, tmp);
+        if (cin.eof()) {
+            cin.clear();
+            return; //go back on ctrl+d
+        }
+        cin.clear();
+        while (checkFloatInput(tmp) || stof(tmp) < 0) {
+            cerr << "Invalid Availability. Try again!" << endl;
+            cout << "Availability: ";
+            getline(cin, tmp);
+            if (cin.eof()) {
+                cin.clear();
+                return; //go back on ctrl+d
+            }
+            cin.clear();
+        }
+        novo->setAvailability(stof(tmp));
+    } else {
+        novo->setAvailability(-1);
+    }
+
     people.push_back(novo);
-    testinsert = staff.insert(novo);
-    //cout << (testinsert.second ? "Added" : "NotAdded" ) << endl;
-    //Ver resultado acima do cout de baixo
+    staff.insert(novo);
+    staffService.push(novo);
 
     cout << endl << "Staff Member added with success!" << endl;
     cout << endl << "0 - BACK" << endl;
@@ -1433,13 +1462,16 @@ void Delegation::removeStaffMember() {
         staffHtabcit toerase = FindPersonHash(tmp);
         if (toerase != staff.end()) staff.erase(toerase);
 
-        /*if (toerase == staff.end())
-            cout << "Não Encontrou na HashTable";
-        else{
-            cout << "Encontrou na HashTable";
-            staff.erase(toerase);
-            cout << "Apagou da HashTable";
-        }*/
+        priority_queue<Staff*, vector<Staff*>, Compare> tmp_queue;
+        while(!staffService.empty()){
+            if(staffService.top()->getName() == tmp){
+                staffService.pop();
+            } else {
+                tmp_queue.push(staffService.top());
+                staffService.pop();
+            }
+        }
+        staffService = tmp_queue;
 
         cout << endl << "Staff Member removed with success!" << endl;
         cout << endl << "0 - BACK" << endl;
@@ -1477,7 +1509,8 @@ void Delegation::changeStaffMember() {
 
     index = findPerson(tmp);
     staffHtabcit tochange = FindPersonHash(tmp);
-    Staff* toc;
+    Staff* toc = *tochange;
+    priority_queue<Staff*, vector<Staff*>, Compare> tmp_queue;
 
     if (index == -1 || people.at(index)->isAthlete()) {
         throw NonExistentStaff(tmp);
@@ -1496,10 +1529,11 @@ void Delegation::changeStaffMember() {
         cout << "5 - Date of Departure" << endl;
         cout << "6 - Function" << endl;
         cout << "7 - Employment" << endl;
+        cout << "8 - Availability" << endl;
         cout << "0 - BACK" << endl;
 
         do {
-            test = checkinputchoice(input, 0, 7);
+            test = checkinputchoice(input, 0, 8);
             if (test != 0 && test != 2)
                 cerr << "Invalid option! Please try again." << endl;
         } while (test != 0 && test != 2);
@@ -1527,7 +1561,6 @@ void Delegation::changeStaffMember() {
                     cin.clear();
                 }
 
-                toc = *tochange;
                 staff.erase(tochange);
                 toc->setName(tmp);
                 staff.insert(toc);
@@ -1553,7 +1586,6 @@ void Delegation::changeStaffMember() {
                     cin.clear();
                 }
 
-                toc = *tochange;
                 staff.erase(tochange);
                 toc->setBirth(tmp_date);
                 staff.insert(toc);
@@ -1579,7 +1611,6 @@ void Delegation::changeStaffMember() {
                     cin.clear();
                 }
 
-                toc = *tochange;
                 staff.erase(tochange);
                 toc->setPassport(tmp);
                 staff.insert(toc);
@@ -1605,7 +1636,6 @@ void Delegation::changeStaffMember() {
                     cin.clear();
                 }
 
-                toc = *tochange;
                 staff.erase(tochange);
                 toc->setArrival(tmp_date);
                 staff.insert(toc);
@@ -1631,7 +1661,6 @@ void Delegation::changeStaffMember() {
                     cin.clear();
                 }
 
-                toc = *tochange;
                 staff.erase(tochange);
                 toc->setDeparture(tmp_date);
                 staff.insert(toc);
@@ -1657,7 +1686,6 @@ void Delegation::changeStaffMember() {
                     cin.clear();
                 }
 
-                toc = *tochange;
                 staff.erase(tochange);
                 toc->setFunction(tmp);
                 staff.insert(toc);
@@ -1690,13 +1718,58 @@ void Delegation::changeStaffMember() {
                     cin.clear();
                 }
 
-                toc = *tochange;
                 staff.erase(tochange);
                 toc->setEmployed(to_bool(tmp));
+                if (to_bool(tmp)) {
+                    toc->setAvailability(0);
+                } else {
+                    toc->setAvailability(-1);
+                }
                 staff.insert(toc);
 
-                //people.at(index)->setEmployed(to_bool(tmp));
+                while(!staffService.empty()){
+                    if(staffService.top()->getEmployed()) tmp_queue.push(staffService.top());
+                    staffService.pop();
+                }
+                staffService = tmp_queue;
+                while(!tmp_queue.empty()){
+                    tmp_queue.pop();
+                }
                 break;
+            case 8:
+                if(toc->getEmployed()) {
+                    cout << "Availability: ";
+                    getline(cin, tmp);
+                    if (cin.eof()) {
+                        cin.clear();
+                        return; //go back on ctrl+d
+                    }
+                    cin.clear();
+                    while (checkFloatInput(tmp) || stof(tmp) < 0) {
+                        cerr << "Invalid Availability. Try again!" << endl;
+                        cout << "Availability: ";
+                        getline(cin, tmp);
+                        if (cin.eof()) {
+                            cin.clear();
+                            return; //go back on ctrl+d
+                        }
+                        cin.clear();
+                    }
+                    staff.erase(tochange);
+                    toc->setAvailability(stof(tmp));
+                    staff.insert(toc);
+
+                    while(!staffService.empty()){
+                        tmp_queue.push(staffService.top());
+                        staffService.pop();
+                    }
+                    staffService = tmp_queue;
+                    while(!tmp_queue.empty()){
+                        tmp_queue.pop();
+                    }
+                } else {
+                    cout << "Staff Member is not hired at the moment!" << endl;
+                }
             case 0:
                 break;
             default:
@@ -1831,6 +1904,145 @@ void Delegation::showStaffMembers() {
         if (test != 0 && test != 2)
             cerr << "Invalid option! Press 0 to go back." << endl;
     } while (test != 0 && test != 2);
+}
+
+void Delegation::requireStaffService() {
+    int test = 0;
+    string input = "";
+    string function, st;
+    float service_time;
+    priority_queue<Staff*, vector<Staff*>, Compare> tmp_queue;
+
+    cout << "Function (if there are no staff members with such function, the first one ready will be required): ";
+    getline(cin, function);
+    if (cin.eof()) {
+        cin.clear();
+        return; //go back on ctrl+d
+    }
+    cin.clear();
+    while (checkStringInput(function)) {
+        cout << "Invalid Function. Try again!" << endl;
+        cout << "Function (if there are no staff members with such function, the first one ready will be required): ";
+        getline(cin, function);
+        if (cin.eof()) {
+            cin.clear();
+            return; //go back on ctrl+d
+        }
+        cin.clear();
+    }
+
+    cout << "Time of service (hours): ";
+    getline(cin, st);
+    if (cin.eof()) {
+        cin.clear();
+        return; //go back on ctrl+d
+    }
+    cin.clear();
+    while (checkFloatInput(st) || stof(st) < 0) {
+        cerr << "Invalid Time of service (hours). Try again!" << endl;
+        cout << "Time of service (hours): ";
+        getline(cin, st);
+        if (cin.eof()) {
+            cin.clear();
+            return; //go back on ctrl+d
+        }
+        cin.clear();
+    }
+    service_time = stof(st);
+
+    while(!staffService.empty()){
+        if(staffService.top()->getFunction() == function){
+            break;
+        }
+        tmp_queue.push(staffService.top());
+        staffService.pop();
+    }
+
+    if(staffService.empty()){
+        cout << tmp_queue.top()->getName() << " has been required for your service!" << endl;
+        tmp_queue.top()->setAvailability(service_time + tmp_queue.top()->getAvailability());
+    } else {
+        cout << staffService.top()->getName() << " has been required for your service!" << endl;
+        staffService.top()->setAvailability(service_time + staffService.top()->getAvailability());
+        tmp_queue.push(staffService.top());
+        staffService.pop();
+    }
+
+    while(!tmp_queue.empty()){
+        staffService.push(tmp_queue.top());
+        tmp_queue.pop();
+    }
+
+    cout << endl << "0 - BACK" << endl;
+    do {
+        test = checkinputchoice(input, 0, 0);
+        if (test != 0&& test != 2)
+            cerr << "Invalid option! Press 0 to go back." << endl;
+    } while (test != 0 && test != 2);
+}
+
+void Delegation::endService(){
+    int test = 0;
+    int index;
+    string input = "", tmp, st;
+
+    cout << "Name: ";
+    getline(cin, tmp);
+    if (cin.eof()) {
+        cin.clear();
+        return; //go back on ctrl+d
+    }
+    cin.clear();
+    while (checkStringInput(tmp)) {
+        cout << "Invalid Name. Try again!" << endl;
+        cout << "Name: ";
+        getline(cin, tmp);
+        if (cin.eof()) {
+            cin.clear();
+            return; //go back on ctrl+d
+        }
+        cin.clear();
+    }
+    index = findPerson(tmp);
+    if (index == -1 || people.at(index)->isAthlete()) {
+        throw NonExistentStaff(tmp);
+    } else {
+        priority_queue<Staff*, vector<Staff*>, Compare> tmp_queue;
+        while(!staffService.empty()){
+            if(staffService.top()->getName() == tmp){
+                cout << "Time of service (hours): ";
+                getline(cin, st);
+                if (cin.eof()) {
+                    cin.clear();
+                    return; //go back on ctrl+d
+                }
+                cin.clear();
+                while (checkFloatInput(st) || stof(st) < 0 || stof(st) > staffService.top()->getAvailability()) {
+                    cerr << "Invalid Time of service (hours). Try again!" << endl;
+                    cout << "Time of service (hours): ";
+                    getline(cin, st);
+                    if (cin.eof()) {
+                        cin.clear();
+                        return; //go back on ctrl+d
+                    }
+                    cin.clear();
+                }
+                staffService.top()->setAvailability(staffService.top()->getAvailability() - stof(st));
+            }
+            tmp_queue.push(staffService.top());
+            staffService.pop();
+        }
+        staffService = tmp_queue;
+
+        cout << endl << "Service ended with success!" << endl;
+        cout << endl << "0 - BACK" << endl;
+        do {
+            test = checkinputchoice(input, 0, 0);
+            if (test != 0&& test != 2)
+                cerr << "Invalid option! Press 0 to go back." << endl;
+        } while (test != 0 && test != 2);
+        return;
+    }
 }
 
 //Athletes Functions
@@ -4854,6 +5066,7 @@ void Delegation::addTokyoResult(){
                cerr << "Invalid option! Press 0 to go back." << endl;
        } while (test != 0 && test != 2);
 }
+
 
 //File Errors - Exceptions
 FileError::FileError(string file) : file(move(file)) {}
