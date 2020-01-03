@@ -186,6 +186,6 @@ bool caseInSensStringCompare(const string & str1, const string &str2);
  * @param st string to process
  * @return true if string == "1" , false if == "0"
  */
-inline bool to_bool(string const& st);
+inline bool to_bool(string const& s) {return s != "0";}
 
 #endif //PROJECT_1_INPUTCHECK_H

@@ -4064,10 +4064,12 @@ void Delegation::mostAwardedAthletes() const{
 }
 
 //Records (BST) functions
-bool newRecord(float result,float record,char comparisonCriteria){
+bool newRecord(float result,float record,char comparisonCriteria, string place){
     if(result == -1) return false; //se o jogo ainda não tem resultado
 
     if(record == -1) return true; //se ainda não existe recorde para uma certa competição/jogo e há dados do resultado nos jogos de tóquio
+
+    if(place == "Tokyo") return true;
 
     if(comparisonCriteria == '+'){ //se existem dados do recorde mundial e dos jogos de Tóquio
         return (result > record);
@@ -4093,7 +4095,7 @@ void Delegation::setRecords(){
                         r = Record((*s)->getName(),c->getName(),t->getName());
                         foundOrNot = records.find(r);
                         if(!(foundOrNot == notFound)){
-                            if(newRecord(t->getResult(),foundOrNot.getRecord(),foundOrNot.getComparisonCriteria())){
+                            if(newRecord(t->getResult(),foundOrNot.getRecord(),foundOrNot.getComparisonCriteria(),foundOrNot.getPlace())){
                                 //é melhor o recorde registado em toquio - troca
                                 r = foundOrNot;
                                 records.remove(foundOrNot);
@@ -4110,7 +4112,7 @@ void Delegation::setRecords(){
                     }
                 }
                 else{
-                    if(newRecord(c->getResult(),foundOrNot.getRecord(),foundOrNot.getComparisonCriteria())){
+                    if(newRecord(c->getResult(),foundOrNot.getRecord(),foundOrNot.getComparisonCriteria(),foundOrNot.getPlace())){
                         //é melhor o recorde registado em toquio - troca
                         r = foundOrNot;
                         records.remove(foundOrNot);

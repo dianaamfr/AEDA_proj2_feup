@@ -63,7 +63,7 @@ class Delegation {
     priority_queue<Staff*, vector<Staff*>, Compare> staffService; /**< Prioritie Queue for service requirements*/
 public:
 
-    friend bool newRecord(float result,float record,char comparisonCriteria);
+    friend bool newRecord(float result,float record,char comparisonCriteria,string place);
 
     /** Delegation Default Constructor*/
     Delegation();
