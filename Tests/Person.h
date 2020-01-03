@@ -332,7 +332,7 @@ public:
 class Staff: public Person{
     string function;/**< The function of the Staff member*/
     bool employed; /**< True if the staff member is currently hired*/
-    float availability; /** Hours until free for next service, -1 if employed = false*/
+    float availability; /**< Hours until free for next service, -1 if employed = false*/
 public:
     /**Staff default constructor*/
     Staff();

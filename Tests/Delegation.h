@@ -14,6 +14,9 @@
 #include "BST.h"
 #include <unordered_set>
 
+/**
+ * Hash Function and Equal Function for Staff to use in HashTable
+ */
 struct staffHash
 {
     int operator() (Staff* const& st) const
@@ -26,9 +29,10 @@ struct staffHash
         return (st1->getName() == st2->getName());
     }
 };
-typedef unordered_set<Staff*,staffHash, staffHash> staffHtab;
-typedef unordered_set<Staff*,staffHash, staffHash>::iterator staffHtabit;
-typedef std::unordered_set<Staff*, staffHash, staffHash>::const_iterator staffHtabcit;
+
+typedef unordered_set<Staff*,staffHash, staffHash> staffHtab; /**< Staff HashTable */
+typedef unordered_set<Staff*,staffHash, staffHash>::iterator staffHtabit; /**< Staff HashTable normal iterator*/
+typedef std::unordered_set<Staff*, staffHash, staffHash>::const_iterator staffHtabcit; /**< Staff HashTable constant iterator*/
 
 class Compare {
 public:
@@ -185,7 +189,6 @@ public:
      */
      void sortAllPeople();
 
-
     /**
    * Calculates the Delegation's total cost
    * Sets the Delegation's total cost
@@ -194,15 +197,11 @@ public:
 
     /**
     * Get the information about the Delegation in a formatted way
-    *
     * @returns the Delegation's information
     */
     string info() const;
 
-    /**
-    * Adds a staff member to the people vector
-    *
-    */
+    /** Adds a staff member to the people vector */
     void addStaffMember();
 
     /** Removes a staff member of the people vector */
@@ -213,19 +212,16 @@ public:
 
     /**
     * Adds an athlete to the people vector and the athlete vector
-    *
     */
     void addAthlete();
 
     /**
     * Removes an athlete from the people and athletes vectors
-    *
     */
     void removeAthlete();
 
     /**
     * Changes data of an athlete from the people and athletes vectors
-    *
     */
     void changeAthlete();
 
@@ -239,6 +235,7 @@ public:
 
     /**Returns staff.end() or a iterator to the Staff* in the hashtable
      * @param name Staff name
+     * @returns Staff HashTable constant iterator
      * */
     staffHtabcit FindPersonHash(const string & name) const;
 
@@ -295,12 +292,6 @@ public:
      * @throws NonExistentTeam if a specific team doesn't exist in the Delegation
      */
     void showTeam() const;
-
-    /** End the participation of the Portuguese Delegation in a specific sport and saves the "history"
-     * @param sport the name of the sport to remove
-     * @throws NonExistentSport if the sport was successfully eliminated
-     */
-    void removeSport(const string &sport);
 
     /** Shows the information of a specific competition in a specific sport
      * @param sport the name of the sport
@@ -483,7 +474,6 @@ public:
     /** Change a result of Tokyo 2020 Olympic Games*/
     void changeTokyoResult();
 
-
     /** Require a service from a staff member*/
     void requireStaffService();
 
@@ -492,7 +482,6 @@ public:
 
     /** Add a result of Tokyo 2020 Olympic Games*/
     void addTokyoResult();
-
 
 };
 
